@@ -8,7 +8,10 @@
     data () {
       return {
       }
-    }
+    },
+    created(){
+      console.log(this._);
+    },
   }
 </script>
 <style scoped lang="scss">
