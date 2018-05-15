@@ -1,9 +1,5 @@
-<template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <div class="el-icon-info"></div>
-    <router-view/>
-  </div>
+<template lang="pug">
+  router-view
 </template>
 
 <script>
@@ -12,7 +8,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped lang="scss">
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

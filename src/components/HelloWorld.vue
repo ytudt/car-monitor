@@ -49,10 +49,10 @@
     <ul>
       <li>
         <a
-          href="http://router.vuejs.org/"
+          href="http://index.vuejs.org/"
           target="_blank"
         >
-          vue-router
+          vue-index
         </a>
       </li>
       <li>

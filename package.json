@@ -13,6 +13,7 @@
     "axios": "^0.18.0",
     "element-ui": "^2.3.8",
     "es6-promise": "^4.2.4",
+    "lodash": "^4.17.10",
     "normalize.css": "^8.0.0",
     "pug": "^2.0.3",
     "pug-lint": "^2.5.0",
