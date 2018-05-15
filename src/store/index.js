@@ -3,9 +3,15 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-let state = {};
+let state = {
+  token: '',
+};
 
-const actions = {};
+const actions = {
+  updateToken({commit}, params = {}) {
+    commit('UPDATE_PARAMS', params);
+  },
+};
 
 const mutations = {};
 

@@ -8,7 +8,7 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'Map',
+      name: 'Index',
       component: (r) => require.ensure([], () => r(require('src/pages/Map')), 'map'),
     },
     {

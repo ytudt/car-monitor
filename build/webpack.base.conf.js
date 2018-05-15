@@ -32,7 +32,7 @@ module.exports = {
       'assets': path.resolve(__dirname, '../src/assets'),
       'core': path.resolve(__dirname, '../src/core'),
       'store': path.resolve(__dirname, '../src/store'),
-      'api': path.resolve(__dirname, '../src/api'),
+      'api': path.resolve(__dirname, '../src/core/api'),
       'util': path.resolve(__dirname, '../src/core/util'),
       'constant': path.resolve(__dirname, '../src/core/constant'),
       'components': path.resolve(__dirname, '../src/components'),

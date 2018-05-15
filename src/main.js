@@ -4,7 +4,8 @@ import Vue from 'vue'
 import './core';
 import App from './App'
 import router from './router'
-import store from './store';
+import store from './store'
+import './mock'
 
 Vue.config.productionTip = false
 
