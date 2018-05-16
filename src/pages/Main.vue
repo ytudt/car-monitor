@@ -7,113 +7,34 @@
         li.tab-item.fl 轨迹回放
         li.tab-item.fl 车辆配置
       .logout(@click="logOut") 退出登录
+    CarDetail
     .map-wrap(id="container" tabindex="0")
 </template>
 
 <script>
   import Header from 'components/Header';
+  import CarDetail from 'components/CarDetail';
   import Cookies from 'js-cookie';
   export default {
     name: 'Main',
     components: {
-      Header
+      Header,
+      CarDetail
     },
     data () {
       return {
       }
     },
     mounted(){
-      console.log(this._);
       let map = new AMap.Map('container', {
         resizeEnable: true,
         zoom:11,
         center: [116.397428, 39.90923]
       });
-      //加载SimpleMarker
-      AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
 
-        var iconTheme = 'default';
-
-        //内置的样式
-        var iconStyles = SimpleMarker.getBuiltInIconStyles(iconTheme);
-
-        //获取一批grid排布的经纬度
-        var lngLats = getGridLngLats(map.getCenter(), 5, iconStyles.length, 130, 70);
-        console.log(lngLats);
-
-        for (var i = 0, len = lngLats.length; i < len; i++) {
-          console.log(iconStyles[i]);
-
-          new SimpleMarker({
-            // iconTheme: iconTheme,
-            iconStyle: 'blue', // 'red', 'blue'
-            //图标文字
-            iconLabel: {
-              //A,B,C.....
-              // innerHTML: String.fromCharCode('A'.charCodeAt(0) + i),
-              style: {
-                //颜色, #333, red等等，这里仅作示例，取iconStyle中首尾相对的颜色
-                // color: iconStyles[len - 1 - i]
-              }
-            },
-
-            //显示定位点
-            //showPositionPoint:true,
-
-            map: map,
-            position: lngLats[i],
-            label: {
-              content: '测试',
-              offset: new AMap.Pixel(27, 25)
-            }
-          });
-        }
-
+      AMapUI.loadUI(['overlay/SimpleMarker'], (SimpleMarker) => {
+        this.initCar(map, SimpleMarker);
       });
-
-      /**
-       * 返回一批网格排列的经纬度
-
-       * @param  {AMap.LngLat} center 网格中心
-       * @param  {number} colNum 列数
-       * @param  {number} size  总数
-       * @param  {number} cellX  横向间距
-       * @param  {number} cellY  竖向间距
-       * @return {Array}  返回经纬度数组
-       */
-      function getGridLngLats(center, colNum, size, cellX, cellY) {
-
-        var pxCenter = map.lnglatToPixel(center);
-
-        var rowNum = Math.ceil(size / colNum);
-
-        var startX = pxCenter.getX(),
-          startY = pxCenter.getY();
-
-        cellX = cellX || 70;
-
-        cellY = cellY || 70;
-
-
-        var lngLats = [];
-
-        for (var r = 0; r < rowNum; r++) {
-
-          for (var c = 0; c < colNum; c++) {
-
-            var x = startX + (c - (colNum - 1) / 2) * (cellX);
-
-            var y = startY + (r - (rowNum - 1) / 2) * (cellY);
-
-            lngLats.push(map.pixelToLngLat(new AMap.Pixel(x, y)));
-
-            if (lngLats.length >= size) {
-              break;
-            }
-          }
-        }
-        return lngLats;
-      }
     },
     methods: {
       logOut(){
@@ -121,6 +42,45 @@
         this.$router.push({
             name: 'Login',
         });
+
+      },
+      initCar(map, SimpleMarker){
+        let markArr = [{
+          status: 'oline',
+          licenseNumber: '京79481274',
+          position: [116.425285, 39.914989],
+        }, {
+          status: 'offline',
+          licenseNumber: '京709034242',
+          position: [116.455285, 39.954989],
+        }];
+
+        for(let i =0 ; i < markArr.length; i++){
+          //创建SimpleMarker实例
+          let marker = new SimpleMarker({
+
+            //前景文字
+            // iconLabel: 'A',
+
+            //图标主题
+            iconTheme: 'default',
+
+            //背景图标样式
+            iconStyle: 'red',
+            label: {
+              content: markArr[i].licenseNumber,
+              offset: new AMap.Pixel(40, 0)
+            },
+
+            //...其他Marker选项...，不包括content
+            map: map,
+            position: markArr[i].position
+          });
+
+          AMap.event.addListener(marker,'click',(e) =>{
+            console.log(e.target.G.label);
+          });
+        }
 
       },
     },
