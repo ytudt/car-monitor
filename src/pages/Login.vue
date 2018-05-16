@@ -51,7 +51,7 @@
           this.loginError = false;
           Cookies.set('token', data.data, { expires: 6 * 1 / 24 });
           this.$router.push({
-            name: 'Index',
+            name: 'Main',
           });
         })
         .catch(() => {

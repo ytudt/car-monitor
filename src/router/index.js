@@ -9,7 +9,7 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'Index',
+      name: 'Main',
       component: (r) => require.ensure([], () => r(require('src/pages/Main')), 'main'),
     },
     {
@@ -21,19 +21,19 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-  // const token = Cookies.get('token');
-  // if(token && to.name === 'Login') {
-  //   return next({
-  //     name: 'Index',
-  //   });
-  // }else if(!token && to.name !== 'Login') {
-  //   return next({
-  //     name: 'Login',
-  //   });
-  // }else {
-  //   next();
-  // }
-  next();
+  const token = Cookies.get('token');
+  if(token && to.name === 'Login') {
+    return next({
+      name: 'Main',
+    });
+  }else if(!token && to.name !== 'Login') {
+    return next({
+      name: 'Login',
+    });
+  }else {
+    next();
+  }
+  // next();
 });
 
 router.afterEach((to) => {
