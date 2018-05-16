@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 axios.defaults.timeout = 5000;
 axios.interceptors.request.use((request) => {
@@ -17,6 +18,7 @@ axios.interceptors.response.use((response) => {
   return response;
 }, (err) => {
   if(err.response && (err.response.status == 401)){
+    location.href = `${location.origin}/#/login`;
     return Cookies.remove('token');
   }
   return Promise.reject(err);

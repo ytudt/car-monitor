@@ -4,12 +4,13 @@
   .form-wrap
     el-form
       el-form-item(label="用户名")
-        el-input(v-model="userName")
+        el-input(v-model="userName" autofocus)
       el-form-item(label="密码")
         el-input(:type="passwordType" v-model="password")
         span.show-password(@click="showPassword=!showPassword") {{showPassword ? 'HIDE' : 'SHOW'}}
-    div.err-mes(v-if="showPassword") 用户名或密码错误
-    el-button(type="primary" :disabled="!userName||!password" @click="login()") 登录
+    div.err-mes(v-if="loginError") 用户名或密码错误
+    .btn-wrap
+      el-button(class="btn" type="primary" size="medium" :disabled="!userName||!password" @click="login()") 登录
 </template>
 
 <script>
@@ -18,7 +19,6 @@
   import api from 'api';
   import Header from 'components/Header';
 
-  console.log(Cookies);
   export default {
     name: 'Login',
     components: {
@@ -26,7 +26,7 @@
     },
     data () {
       return {
-        showPassword: true,
+        showPassword: false,
         userName: '',
         password: '',
         loginError: false,
@@ -38,7 +38,6 @@
       },
     },
     created(){
-      console.log(MD5('123'));
     },
     methods:{
       login(){
@@ -48,7 +47,8 @@
           password: MD5(this.password),
         })
         .then(({data}) => {
-          if(!data || !data.success) return this.showPassword = true;
+          if(!data || !data.success) return this.loginError = true;
+          this.loginError = false;
           Cookies.set('token', data.data, { expires: 6 * 1 / 24 });
           this.$router.push({
             name: 'Index',
@@ -68,6 +68,9 @@
 <style scoped lang="scss">
   .form-wrap{
     width: 400px;
+    background: #fff;
+    margin: 150px auto;
+    padding: 20px;
     .show-password{
       position: absolute;
       right: 10px;
@@ -76,6 +79,11 @@
     }
     .err-mes{
       color: red;
+      font-size: 16px;
+      text-align: center;
+    }
+    .btn-wrap{
+      text-align: center;
     }
   }
 </style>

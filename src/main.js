@@ -9,7 +9,6 @@ import './mock'
 
 Vue.config.productionTip = false
 
-console.log(router);
 
 /* eslint-disable no-new */
 new Vue({

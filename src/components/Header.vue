@@ -1,5 +1,8 @@
 <template lang="pug">
   .header-wrap
+    .company-ingo
+      .img 公司logo
+      span.name 北京*****公司
     slot
 </template>
 
@@ -20,7 +23,25 @@
   .header-wrap{
     padding: 0 20px;
     width: 100%;
-    height: 60px;
+    height:  $header-height;
     background: $base-color;
+    .company-ingo {
+      height: $header-height;
+      float: left;
+      color: #fff;
+      .name,.img{
+        float: left;
+      }
+      .img{
+        display: inline-block;
+        width: 90px;
+        height: 100%
+      }
+      .name{
+        font-size: 20px;
+        height: $header-height;
+        line-height: $header-height;
+      }
+    }
   }
 </style>

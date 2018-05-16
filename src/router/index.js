@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import Cookies from 'js-cookie';
 
 
 Vue.use(Router);
@@ -9,7 +10,7 @@ const router = new Router({
     {
       path: '/',
       name: 'Index',
-      component: (r) => require.ensure([], () => r(require('src/pages/Map')), 'map'),
+      component: (r) => require.ensure([], () => r(require('src/pages/Main')), 'main'),
     },
     {
       path: '/login',
@@ -20,6 +21,18 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
+  // const token = Cookies.get('token');
+  // if(token && to.name === 'Login') {
+  //   return next({
+  //     name: 'Index',
+  //   });
+  // }else if(!token && to.name !== 'Login') {
+  //   return next({
+  //     name: 'Login',
+  //   });
+  // }else {
+  //   next();
+  // }
   next();
 });
 
