@@ -1,5 +1,49 @@
 <template lang="pug">
-    h1(v-drag="") test
+
+  .car-detail-wrap(v-drag="")
+    ul.detail-key.clr
+      li.fl 车牌号
+      li.fl 司机
+      li.fl 押运员1
+      li.fl 押运员1
+    ul.detail-value.clr
+      li.fl 京N12124
+      li.fl 张三
+      li.fl 李四
+      li.fl 王五
+    .video-wrap 我是视频
+    el-table(:data="tableData")
+      el-table-column(label="门店")
+        template(slot-scope="scope")
+          span {{scope.row.date}}
+      el-table-column(label="货物件数")
+        template(slot-scope="scope")
+          span {{scope.row.date}}
+      el-table-column(label="状态")
+        template(slot-scope="scope")
+          span {{scope.row.date}}
+      el-table-column(label="明细")
+        template(slot-scope="scope")
+          el-dropdown
+            div.el-dropdown-link
+              span 明细
+              i.el-icon-caret-bottom
+            el-dropdown-menu(slot="dropdown")
+              el-dropdown-item
+                ul.clr
+                  li.fl 1
+                  li.fl 2
+                  li.fl 3
+              el-dropdown-item
+                ul.clr
+                  li.fl 1
+                  li.fl 2
+                  li.fl 3
+          <!--div(@click="onDetailClick()")-->
+            <!--span 明细-->
+            <!--i.el-icon-caret-bottom-->
+    div 车厢温度: -10
+
 </template>
 
 <script>
@@ -16,22 +60,50 @@
     },
     data () {
       return {
-        msg: 'Welcome to Your Vue.js App'
+        tableData: [{
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1517 弄'
+        }, {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄'
+        }, {
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1516 弄'
+        }]
       }
-    }
+    },
+    methods:{
+      onDetailClick(){
+        console.log(123);
+      },
+    },
   }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
   @import '~core/styles/index';
- h1{
+.car-detail-wrap{
    position: fixed;
    top: 200px;
    right: 20px;
-   width: 100px;
-   height: 100px;
+  width: 400px;
    background: red;
    z-index: 1;
+   background: #f4f4f4;
+  .detail-key,.detail-value{
+    width: 100%;
+    li{
+      width: 25%;
+      text-align: center;
+    }
+  }
  }
 </style>

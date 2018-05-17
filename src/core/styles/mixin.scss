@@ -1,0 +1,49 @@
+@mixin clearfix {
+  &:before, &:after {
+    display: table;
+
+    content: ' ';
+  }
+
+  &:after {
+    clear: both;
+  }
+}
+
+@mixin user-select($select) {
+  -webkit-user-select: $select;
+  -moz-user-select: $select;
+  -ms-user-select: $select; // IE10+
+  user-select: $select;
+}
+
+@mixin white-box-shadow {
+  box-shadow: 0 0 0.2rem rgba(178,178,210,0.3);
+}
+@mixin singel-ellipsis() {
+  overflow: hidden;
+  max-height: 100%;
+  text-overflow:ellipsis;
+  width: 100%;
+  white-space: nowrap;
+
+}
+@mixin multi-ellipsis($line) {
+  overflow: hidden;
+  max-height: 100%;
+  text-overflow:ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp:$line;
+  -webkit-box-orient:vertical;
+}
+
+@mixin circle($width) {
+  width: $width;
+  height: $width;
+  line-height:$width;
+  border-radius: 0.5 * $width;
+}
+
+@mixin white-box-shadow {
+  box-shadow: 0 0 0.2rem rgba(178,178,210,0.3);
+}
