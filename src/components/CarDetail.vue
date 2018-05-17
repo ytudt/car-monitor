@@ -6,6 +6,11 @@
   import Draggable from 'vuedraggable'
   export default {
     name: 'CarDetail',
+    props: {
+      carInfo:{
+        type: String,
+      },
+    },
     components: {
       Draggable
     },

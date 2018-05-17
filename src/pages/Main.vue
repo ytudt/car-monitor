@@ -3,11 +3,16 @@
     Header
       ul.tab-list.clr
         li.tab-item.fl 总览
-        li.tab-item.fl 目标车辆信息
+        li.tab-item.fl(@click="showCarList()")
+          el-dropdown
+            span.el-dropdown-link 目标车辆信息
+            el-dropdown-menu(slot="dropdown")
+              el-dropdown-item(v-for="(item, index) in markArr" :key="index")
+                .content(@click="carInfo=item.licenseNumber") {{item.licenseNumber}}
         li.tab-item.fl 轨迹回放
         li.tab-item.fl 车辆配置
       .logout(@click="logOut") 退出登录
-    CarDetail
+    CarDetail(v-if="carInfo" :carInfo="carInfo")
     .map-wrap(id="container" tabindex="0")
 </template>
 
@@ -23,6 +28,9 @@
     },
     data () {
       return {
+        carInfo: null,
+        markArr: [],
+        // showCarDetail: false,
       }
     },
     mounted(){
@@ -45,7 +53,7 @@
 
       },
       initCar(map, SimpleMarker){
-        let markArr = [{
+        this.markArr = [{
           status: 'oline',
           licenseNumber: '京79481274',
           position: [116.425285, 39.914989],
@@ -55,7 +63,7 @@
           position: [116.455285, 39.954989],
         }];
 
-        for(let i =0 ; i < markArr.length; i++){
+        for(let i =0 ; i < this.markArr.length; i++){
           //创建SimpleMarker实例
           let marker = new SimpleMarker({
 
@@ -68,20 +76,29 @@
             //背景图标样式
             iconStyle: 'red',
             label: {
-              content: markArr[i].licenseNumber,
+              content: this.markArr[i].licenseNumber,
               offset: new AMap.Pixel(40, 0)
             },
 
             //...其他Marker选项...，不包括content
             map: map,
-            position: markArr[i].position
+            position: this.markArr[i].position
           });
 
           AMap.event.addListener(marker,'click',(e) =>{
             console.log(e.target.G.label);
+            this.showCarDetail = true;
+            console.log(e.target.G.label);
+            this.carInfo = e.target.G.label.content;
           });
         }
 
+      },
+      showCarList(){
+
+      },
+      test(){
+        console.log('test');
       },
     },
   }
@@ -100,8 +117,14 @@
         line-height: $header-height;
         margin: 0 10px;
         cursor: pointer;
-        &:active{
-          color: #ccc;
+        /*&:active{*/
+          /*color: #ccc;*/
+        /*}*/
+        /*&:hover{*/
+          /*color: #ccc;*/
+        /*}*/
+        .el-dropdown-link{
+          color: #fff;
         }
       }
     }
