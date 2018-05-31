@@ -4,16 +4,31 @@
       .img 公司logo
       span.name 北京*****公司
     slot
+    .logout(v-if="showLogOut" @click="logOut") 退出登录
 </template>
 
 <script>
+  import Cookies from 'js-cookie';
   export default {
     name: 'HelloWorld',
     data () {
       return {
         msg: 'Welcome to Your Vue.js App'
       }
-    }
+    },
+    computed:{
+      showLogOut(){
+        return Cookies.get('token');
+      },
+    },
+    methods:{
+      logOut(){
+        Cookies.remove('token');
+        this.$router.push({
+          name: 'Login',
+        });
+      },
+    },
   }
 </script>
 
@@ -42,6 +57,13 @@
         height: $header-height;
         line-height: $header-height;
       }
+    }
+    .logout{
+      color: #fff;
+      float: right;
+      height: 100%;
+      line-height: 60px;
+      cursor: pointer;
     }
   }
 </style>

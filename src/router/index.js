@@ -8,14 +8,22 @@ Vue.use(Router);
 const router = new Router({
   routes: [
     {
-      path: '/',
-      name: 'Main',
-      component: (r) => require.ensure([], () => r(require('src/pages/Main')), 'main'),
-    },
-    {
       path: '/login',
       name: 'Login',
       component: (r) => require.ensure([], () => r(require('src/pages/Login')), 'login'),
+    },
+    {
+      path: '/',
+      name: 'Main',
+      component: (r) => require.ensure([], () => r(require('src/pages/Main')), 'main'),
+      meta:{
+        KeepAlive: true,
+      },
+    },
+    {
+      path: '/config',
+      name: 'Config',
+      component: (r) => require.ensure([], () => r(require('src/pages/Config')), 'Config'),
     },
   ],
 });

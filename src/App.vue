@@ -1,5 +1,7 @@
 <template lang="pug">
-  router-view
+  keep-alive
+    router-view(v-if="$route.meta.KeepAlive")
+    router-view(v-else)
 </template>
 
 <script>
