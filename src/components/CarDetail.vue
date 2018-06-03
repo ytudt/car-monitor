@@ -51,7 +51,7 @@
   export default {
     name: 'CarDetail',
     props: {
-      carInfo:{
+      carNumber:{
         type: String,
       },
     },
@@ -88,8 +88,7 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-  @import '~core/styles/index';
+<style lang="scss">
 .car-detail-wrap{
    position: fixed;
    top: 200px;

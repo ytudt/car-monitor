@@ -33,8 +33,7 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-  @import '~core/styles/index';
+<style lang="scss">
   .header-wrap{
     padding: 0 20px;
     width: 100%;

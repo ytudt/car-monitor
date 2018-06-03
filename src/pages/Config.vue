@@ -19,6 +19,5 @@
     },
   }
 </script>
-<style scoped lang="scss">
-  @import '~core/styles/index';
+<style lang="scss">
 </style>

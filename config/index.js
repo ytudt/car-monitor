@@ -2,8 +2,8 @@
 // Template version: 1.3.1
 // see http://vuejs-templates.github.io/webpack for documentation.
 
-const path = require('path')
-
+const path = require('path');
+const os = require('os');
 module.exports = {
   dev: {
 
@@ -13,14 +13,14 @@ module.exports = {
     proxyTable: {},
 
     // Various Dev Server settings
-    host: 'localhost', // can be overwritten by process.env.HOST
+    host: getLocalIp(), // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
 
-    
+
     /**
      * Source Maps
      */
@@ -66,4 +66,17 @@ module.exports = {
     // Set to `true` or `false` to always turn it on or off
     bundleAnalyzerReport: process.env.npm_config_report
   }
+}
+
+function getLocalIp() {
+  var iptable = {},
+    ifaces = os.networkInterfaces();
+  for (var dev in ifaces) {
+    ifaces[dev].forEach(function (details){
+      if ((details.family == 'IPv4') && (details.internal == false)) {
+        iptable['localIP'] = details.address;
+      }
+    });
+  }
+  return iptable.localIP;
 }

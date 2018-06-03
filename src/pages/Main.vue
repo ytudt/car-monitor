@@ -3,18 +3,18 @@
     Header
       ul.tab-list.clr
         li.tab-item.fl 总览
-        li.tab-item.fl(@click="showCarList()")
+        li.tab-item.fl()
           el-dropdown
             span.el-dropdown-link 目标车辆信息
             el-dropdown-menu(slot="dropdown")
               el-dropdown-item(v-for="(item, index) in carList" :key="index")
-                .content(@click="carInfo=item.carNumber") {{item.carNumber}}
+                .content(@click="onCarClick(item.carNumber)") {{item.carNumber}}
         li.tab-item.fl
           el-dropdown
             span.el-dropdown-link 轨迹回放
             el-dropdown-menu(slot="dropdown")
               el-dropdown-item(v-for="(item, index) in carList" :key="index")
-                span.el-dropdown-link(@click="showTrack(item.carNumber)") {{item.carNumber}}
+                span.el-dropdown-link(@click="showPath(item.carNumber)") {{item.carNumber}}
                 el-dropdown()
                   span.el-dropdown-link {{item.licenseNumber}}
                   el-dropdown-menu(slot="dropdown")
@@ -22,10 +22,10 @@
                       ul.clr
                         li.fl 日期
                         li.fl 车次
-                <!--.content(@click="carInfo=item.licenseNumber") -->
+                <!--.content(@click="carNumber=item.licenseNumber") -->
         li.tab-item.fl
           router-link(:to="{ name: 'Config'}") 车辆配置
-    CarDetail(v-if="carInfo" :carInfo="carInfo")
+    CarDetail(v-if="carNumber" :carNumber="carNumber")
     .map-wrap(id="container" tabindex="0")
 </template>
 
@@ -42,8 +42,9 @@
     },
     data () {
       return {
-        carInfo: null,
+        carNumber: null,
         carList: [],
+        map: null,
         pathSimplifierIns: null,
       }
     },
@@ -51,24 +52,14 @@
       this.getCarList();
     },
     mounted(){
-      let map = new AMap.Map('container', {
+      this.map = new AMap.Map('container', {
         resizeEnable: true,
         zoom:12,
         center: [116.397428, 39.90923]
       });
-      AMap.plugin(['AMap.ToolBar'],
-        function(){
-          map.addControl(new AMap.ToolBar());
-        });
-
-      AMapUI.loadUI(['overlay/SimpleMarker'], (SimpleMarker) => {
-        this.initCar(map, SimpleMarker);
-      });
-
-      //加载PathSimplifier，loadUI的路径参数为模块名中 'ui/' 之后的部分
-      AMapUI.load(['ui/misc/PathSimplifier'], (PathSimplifier) => {
-      this.initPage(map, PathSimplifier);
-      });
+      let {map} = this;
+      AMap.plugin(['AMap.ToolBar'], () => map.addControl(new AMap.ToolBar()));
+      AMapUI.load(['ui/misc/PathSimplifier'], (PathSimplifier) => this.initPath(map, PathSimplifier));
     },
     methods: {
       getCarList(){
@@ -79,57 +70,49 @@
               item.position = [item.lng, item.lat];
             });
             this.carList = carList;
+            AMapUI.loadUI(['overlay/SimpleMarker'], (SimpleMarker) => this.initCarList(this.map, SimpleMarker));
           })
-          .catch((err) => {
+          .catch(() => {
             Message({
               type: 'error',
               message: '车辆数据获取失败,请刷新重试~',
             });
           });
       },
-      initCar(map, SimpleMarker){
+      initCarList(map, SimpleMarker){
         for(let i =0 ; i < this.carList.length; i++){
           let car = this.carList[i];
           //创建SimpleMarker实例
           let marker = new SimpleMarker({
-
-            //前景文字
-            // iconLabel: 'A',
-
-            //图标主题
             iconTheme: 'default',
-
-            //背景图标样式
             iconStyle: car.online ? 'red' : 'blue',
             label: {
               content: car.carNumber,
               offset: new AMap.Pixel(40, 0)
             },
-
-            //...其他Marker选项...，不包括content
             map: map,
             position: car.position
           });
 
           AMap.event.addListener(marker,'click',(e) =>{
-            this.showCarDetail = true;
-            this.carInfo = e.target.G.label.content;
-            this.pathSimplifierIns.hide();
+            this.onCarClick(e.target.G.label.content);
           });
         }
 
       },
-      initPage(map, PathSimplifier){
-        //创建组件实例
+      onCarClick(carNumber){
+        this.showCarDetail = true;
+        this.carNumber = carNumber;
+        this.pathSimplifierIns.hide();
+      },
+      initPath(map, PathSimplifier){
         this.pathSimplifierIns = new PathSimplifier({
           zIndex: 100,
           map: map, //所属的地图实例
           getPath: function(pathData, pathIndex) {
-            //返回轨迹数据中的节点坐标信息，[AMap.LngLat, AMap.LngLat...] 或者 [[lng|number,lat|number],...]
             return pathData.path;
           },
           renderOptions: {
-            //轨迹线的样式
             pathLineStyle: {
               strokeStyle: 'red',
               lineWidth: 6,
@@ -138,13 +121,8 @@
           }
         });
       },
-      showCarList(){
-
-      },
-      showTrack(cardId){
+      showPath(cardId){
        this.getCarTrack(cardId);
-
-
       },
       getCarTrack(cardId){
         this.pathSimplifierIns.show();
@@ -154,27 +132,24 @@
           data && data.data.forEach((item) => {
             path.push([item.lng, item.lat]);
           });
-          this.pathSimplifierIns.setData([{
-            name: '车辆轨迹',
-            path,
-          }]);
-          //创建一个巡航器
-          var navg = this.pathSimplifierIns.createPathNavigator(0, //关联第1条轨迹
-            {
-              loop: true, //循环播放
-              speed: 100000
-            });
-          navg.start();
+          this.setPath(path);
         });
       },
-    },
-    beforeRouteEnter(to, from, next){
-      next();
+      setPath(path, option = {}){
+        let {speed, loop} = option;
+        loop = loop || true;
+        speed = speed || 100000;
+        this.pathSimplifierIns.setData([{
+          name: '车辆轨迹',
+          path,
+        }]);
+        this.pathSimplifierIns.createPathNavigator(0,
+          {loop, speed,}).start();
+      },
     },
   }
 </script>
-<style scoped lang="scss">
-  @import '~core/styles/index';
+<style lang="scss">
   .main-wrap{
     height: 100%;
     .tab-list{
