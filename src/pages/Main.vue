@@ -1,6 +1,6 @@
 <template lang="pug">
   .main-wrap
-    Header
+    Header.header
       ul.tab-list.clr
         li.tab-item.fl 总览
         li.tab-item.fl()
@@ -26,11 +26,14 @@
         li.tab-item.fl
           router-link(:to="{ name: 'Config'}") 车辆配置
     CarDetail(v-if="carNumber" :carNumber="carNumber")
-    .map-wrap(id="container" tabindex="0")
+    .map-wrap()
+      div(id="container")
 </template>
 
 <script>
   import axios from 'axios';
+  import api from 'api';
+  import {extend} from "util";
   import {Message} from 'element-ui';
   import Header from 'components/Header';
   import CarDetail from 'components/CarDetail';
@@ -63,14 +66,24 @@
     },
     methods: {
       getCarList(){
-        axios.get('/api/vehicles')
+        api.main.getVehicles()
           .then(({data}) => {
             let carList = data.data || [];
-            carList.forEach((item, index) => {
-              item.position = [item.lng, item.lat];
-            });
-            this.carList = carList;
+            return this.getCarLocation(carList);
+            // console.log(carList);
+            // carList.forEach((item, index) => {
+            //   item.position = [item.lng, item.lat];
+            // });
+            // this.carList = carList;
+            // AMapUI.loadUI(['overlay/SimpleMarker'], (SimpleMarker) => this.initCarList(this.map, SimpleMarker));
+          })
+          .then(() => {
             AMapUI.loadUI(['overlay/SimpleMarker'], (SimpleMarker) => this.initCarList(this.map, SimpleMarker));
+            // console.log(122);
+            // console.log(this.carList);
+            // carList.forEach((item, index) => {
+            //   item.position = [item.lng, item.lat];
+            // });
           })
           .catch(() => {
             Message({
@@ -79,15 +92,44 @@
             });
           });
       },
+      getCarLocation(carList){
+        let promises = Promise.all(carList.map((car) => {
+          return new Promise((resolve, reject) => {
+            api.main.getLocation({
+              licenseNumber: car.licenseNumber,
+            })
+              .then((res) => {
+                car = extend(car, res.data.data[0]);
+                car.position = [car.lng, car.lat];
+                this.carList = carList;
+                resolve();
+              })
+              .catch(() => {
+                reject();
+              });
+          });
+        }));
+        return promises;
+        // promises()
+        //   .then(() => {
+        //     console.log(345);
+        //   })
+        //   .catch(() => {
+        //     console.log(789);
+        //   });
+
+
+      },
       initCarList(map, SimpleMarker){
         for(let i =0 ; i < this.carList.length; i++){
           let car = this.carList[i];
+          console.log(car);
           //创建SimpleMarker实例
           let marker = new SimpleMarker({
             iconTheme: 'default',
             iconStyle: car.online ? 'red' : 'blue',
             label: {
-              content: car.carNumber,
+              content: car.licenseNumber,
               offset: new AMap.Pixel(40, 0)
             },
             map: map,
@@ -152,6 +194,18 @@
 <style lang="scss">
   .main-wrap{
     height: 100%;
+    position: relative;
+    box-sizing: border-box ;
+    .header{
+      height: $header-height;
+    }
+    .map-wrap{
+      width: 100%;
+      position: absolute;
+      top: $header-height;
+      bottom: 0px;
+      left: 0px;
+    }
     .tab-list{
       color: #fff;
       display: inline-block;

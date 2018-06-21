@@ -1,5 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import {serverUrl} from '../constant';
+
 
 axios.defaults.timeout = 5000;
 axios.interceptors.request.use((request) => {
@@ -7,7 +9,7 @@ axios.interceptors.request.use((request) => {
   token && request.url.indexOf('api/admin/login') === -1 && (request.headers['Authorization'] = token);
   if (request.url.indexOf('http') !== 0){
     let url = request.url.replace('/api', 'api');
-    request.url = `${host}/${url}`;
+    request.url = `${serverUrl}/${url}`;
   }
   return request;
 }, (error) => {

@@ -10,7 +10,7 @@
         span.show-password(@click="showPassword=!showPassword") {{showPassword ? 'HIDE' : 'SHOW'}}
     div.err-mes(v-if="loginError") 用户名或密码错误
     .btn-wrap
-      el-button(class="btn" type="primary" size="medium" :disabled="!userName||!password" @click="login()") 登录
+      button.btn(:disabled="!userName||!password" v-bind:class="{disable: !userName||!password}" @click="login()") 登录
 </template>
 
 <script>
@@ -84,6 +84,17 @@
     }
     .btn-wrap{
       text-align: center;
+      margin-top: 10px;
+      .btn{
+        border-radius: 5px;
+        color: #fff;
+        width: 100%;
+        height: 40px;
+        background: $base-color;
+        &.disable{
+          background: #ccc;
+        }
+      }
     }
   }
 </style>

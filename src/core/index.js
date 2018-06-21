@@ -8,6 +8,7 @@ import 'core/styles/index.scss';
 import './config';
 import * as directive from './directive';
 import lodash from 'lodash';
+import './util'
 
 Object.defineProperty(Vue.prototype, '_', { value: lodash });
 

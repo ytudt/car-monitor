@@ -12,6 +12,9 @@
       li.fl 李四
       li.fl 王五
     .video-wrap 我是视频
+      .container
+        div(id="flashContent" style="width:100%;height:100%")
+          p 看视频请打开大于11.1.0版本Adobe Flash Player
     el-table(:data="tableData")
       el-table-column(label="门店")
         template(slot-scope="scope")
@@ -42,7 +45,7 @@
           <!--div(@click="onDetailClick()")-->
             <!--span 明细-->
             <!--i.el-icon-caret-bottom-->
-    div 车厢温度: -10
+    div 车厢温度: -10℃
 
 </template>
 
@@ -79,6 +82,13 @@
         }]
       }
     },
+    mounted(){
+      let pageHost = ((document.location.protocol == "https:") ? "https://" : "http://");
+      document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" +
+        pageHost +
+        "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>"
+      );
+    },
     methods:{
       onDetailClick(){
         console.log(123);
@@ -102,6 +112,18 @@
     li{
       width: 25%;
       text-align: center;
+    }
+  }
+  .video-wrap{
+    .video-list{
+      width: 100%;
+      .video-item{
+        display: inline-block;
+        width: 50%;
+        height: 100px;
+        background: red;
+
+      }
     }
   }
  }
