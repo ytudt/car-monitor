@@ -21,6 +21,14 @@ const router = new Router({
       },
     },
     {
+      path: '/user',
+      name: 'userManager',
+      component: (r) => require.ensure([], () => r(require('src/pages/userManager')), 'userManager'),
+      meta:{
+        KeepAlive: true,
+      },
+    },
+    {
       path: '/config',
       name: 'Config',
       component: (r) => require.ensure([], () => r(require('src/pages/Config')), 'Config'),

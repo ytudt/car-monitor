@@ -8,15 +8,15 @@
             span.el-dropdown-link 目标车辆信息
             el-dropdown-menu(slot="dropdown")
               el-dropdown-item(v-for="(item, index) in carList" :key="index")
-                .content(@click="onCarClick(item.carNumber)") {{item.carNumber}}
+                .content(@click="onCarClick(item.licenseNumber)") {{item.licenseNumber}}
         li.tab-item.fl
           el-dropdown
             span.el-dropdown-link 轨迹回放
             el-dropdown-menu(slot="dropdown")
               el-dropdown-item(v-for="(item, index) in carList" :key="index")
-                span.el-dropdown-link(@click="showPath(item.carNumber)") {{item.carNumber}}
+                span.el-dropdown-link(@click="showPath(item.licenseNumber)") {{item.licenseNumber}}
                 el-dropdown()
-                  span.el-dropdown-link {{item.licenseNumber}}
+                  span.el-dropdown-link
                   el-dropdown-menu(slot="dropdown")
                     el-dropdown-item
                       ul.clr
@@ -25,7 +25,8 @@
                 <!--.content(@click="carNumber=item.licenseNumber") -->
         li.tab-item.fl
           router-link(:to="{ name: 'Config'}") 车辆配置
-    CarDetail(v-if="carNumber" :carNumber="carNumber")
+        li.tab-item.fl
+          router-link(:to="{ name: 'userManager'}") 用户管理
     .map-wrap()
       div(id="container")
 </template>
@@ -41,7 +42,7 @@
     name: 'Main',
     components: {
       Header,
-      CarDetail
+      CarDetail,
     },
     data () {
       return {
@@ -70,20 +71,9 @@
           .then(({data}) => {
             let carList = data.data || [];
             return this.getCarLocation(carList);
-            // console.log(carList);
-            // carList.forEach((item, index) => {
-            //   item.position = [item.lng, item.lat];
-            // });
-            // this.carList = carList;
-            // AMapUI.loadUI(['overlay/SimpleMarker'], (SimpleMarker) => this.initCarList(this.map, SimpleMarker));
           })
           .then(() => {
             AMapUI.loadUI(['overlay/SimpleMarker'], (SimpleMarker) => this.initCarList(this.map, SimpleMarker));
-            // console.log(122);
-            // console.log(this.carList);
-            // carList.forEach((item, index) => {
-            //   item.position = [item.lng, item.lat];
-            // });
           })
           .catch(() => {
             Message({
@@ -110,15 +100,6 @@
           });
         }));
         return promises;
-        // promises()
-        //   .then(() => {
-        //     console.log(345);
-        //   })
-        //   .catch(() => {
-        //     console.log(789);
-        //   });
-
-
       },
       initCarList(map, SimpleMarker){
         for(let i =0 ; i < this.carList.length; i++){
@@ -143,8 +124,8 @@
 
       },
       onCarClick(carNumber){
-        this.showCarDetail = true;
         this.carNumber = carNumber;
+        this.showCarDetail = true;
         this.pathSimplifierIns.hide();
       },
       initPath(map, PathSimplifier){
@@ -209,6 +190,7 @@
     .tab-list{
       color: #fff;
       display: inline-block;
+      float: left;
       .tab-item{
         font-size: 14px;
         float: left;
