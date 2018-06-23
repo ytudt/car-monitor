@@ -1,5 +1,5 @@
 import * as login from './login';
 import * as main from './main';
-import * as user from './user';
+import * as config from './config';
 
-export default {login, main, user};
+export default {login, main, config};

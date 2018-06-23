@@ -21,17 +21,24 @@ const router = new Router({
       },
     },
     {
-      path: '/user',
-      name: 'userManager',
-      component: (r) => require.ensure([], () => r(require('src/pages/userManager')), 'userManager'),
-      meta:{
-        KeepAlive: true,
-      },
-    },
-    {
       path: '/config',
       name: 'Config',
       component: (r) => require.ensure([], () => r(require('src/pages/Config')), 'Config'),
+      children: [
+        {
+          path: 'user',
+          name: 'userConfig',
+          component: (r) => require.ensure([], () => r(require('src/pages/userConfig')), 'userConfig'),
+        },
+        {
+          path: 'role',
+          name: 'roleConfig',
+          component: (r) => require.ensure([], () => r(require('src/pages/roleConfig')), 'roleConfig'),
+          meta: {
+            title: '在线申请',
+          },
+        },
+      ],
     },
   ],
 });

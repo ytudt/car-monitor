@@ -24,9 +24,8 @@
                         li.fl 车次
                 <!--.content(@click="carNumber=item.licenseNumber") -->
         li.tab-item.fl
-          router-link(:to="{ name: 'Config'}") 车辆配置
-        li.tab-item.fl
-          router-link(:to="{ name: 'userManager'}") 用户管理
+          router-link(:to="{ name: 'roleConfig'}") 配置台
+    CarDetail(v-if="showCarDetail")
     .map-wrap()
       div(id="container")
 </template>
@@ -46,6 +45,7 @@
     },
     data () {
       return {
+        showCarDetail: false,
         carNumber: null,
         carList: [],
         map: null,

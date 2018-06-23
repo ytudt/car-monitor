@@ -83,6 +83,7 @@
       }
     },
     mounted(){
+      console.log(123);
       // let pageHost = ((document.location.protocol == "https:") ? "https://" : "http://");
       // document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" +
       //   pageHost +
