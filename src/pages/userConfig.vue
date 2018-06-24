@@ -132,7 +132,7 @@
         });
       },
       handleSubmitUser(){
-        let {id, password, userName, expirationTime, roleId, roleName} = this.form;
+        let {id, password, userName, expirationTime, roleId} = this.form;
         api.config.addUser({
           id,
           roleId,
