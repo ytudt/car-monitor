@@ -5,16 +5,19 @@
       el-table-column(label="用户名")
         template(slot-scope="scope")
           span {{scope.row.userName}}
+      el-table-column(label="用户角色")
+        template(slot-scope="scope")
+          span {{scope.row.roleName}}
       el-table-column(label="创建时间")
         template(slot-scope="scope")
           span {{scope.row.createTime}}
       el-table-column(label="操作")
         template(slot-scope="scope")
-          <!--el-button(size="mini" @click="handleEdit(scope.$index, scope.row)") 编辑-->
+          el-button(size="mini" @click="handleEdit(scope.$index, scope.row)") 编辑
           el-button(size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)") 删除
     div.add-user
       el-button(size="medium" @click="handleAddUser()" type="primary") 新增
-    el-dialog(:title="dialogTitle" :visible.sync="dialogFormVisible")
+    el-dialog(:title="dialogTitle" :visible.sync="dialogFormVisible" @close="initForm()")
       el-form(:model="form" label-width="60px")
         el-form-item(label="用户名")
           el-input(v-model="form.userName")
@@ -22,17 +25,17 @@
           el-input(v-model="form.password")
         el-form-item(label="角色")
           el-select(v-model="form.roleId" placeholder="请选择")
-            el-option(v-for="item in roleList" :key="item.roleId" :label="item.roleName" :value="item.roleId")
+            el-option( v-for="item in roleList" :key="item.roleId" :label="item.roleName" :value="item.roleId")
       div.dialog-footer
         el-button(@click="dialogFormVisible = false") 取消
         el-button(:disabled="disableAddBtn" type="primary" @click="handleSubmitUser()") 确定
-
-
 </template>
 
 <script>
   import {Message} from 'element-ui';
+  import MD5 from 'md5';
   import api from 'api';
+
   export default {
     data () {
       return {
@@ -57,9 +60,11 @@
     methods:{
       initForm(){
         this.form = {
+          id: '',
           userName: '',
           password: '',
           roleId: '',
+          roleName: '',
           expirationTime: '',
         };
       },
@@ -80,29 +85,30 @@
         this.dialogTitle = '新增用户';
         api.config.getRoles()
           .then(({data}) => {
-            console.log(data);
             let roleList = data.data || [];
-            roleList.forEach((item) => {
-              item.roleId = item.id;
-            });
-            this.roleList = data.data;
+            this.setRoleList(roleList);
           });
       },
-      // handleEdit(index, user){
-      //   this.dialogFormVisible = true;
-      //   this.dialogTitle = '编辑用户';
-      //   api.config.getRoles()
-      //     .then(({data}) => {
-      //       console.log(data);
-      //       this.roleList = data.data;
-      //     });
-      //   const {userName, password, roleId} = user;
-      //   this.form = {
-      //     userName,
-      //     password,
-      //     roleId,
-      //   };
-      // },
+      handleEdit(index, user){
+        this.dialogTitle = '编辑用户';
+        this.dialogFormVisible = true;
+        api.config.getRoles()
+          .then(({data}) => {
+            let roleList = data.data || [];
+            this.setRoleList(roleList);
+            const {id, userName, roleId} = user;
+            this.form.id = id;
+            this.form.userName = userName;
+            this.form.roleId = roleId;
+          });
+
+      },
+      setRoleList(roleList){
+        roleList.forEach((item) => {
+          item.roleId = item.id;
+        });
+        this.roleList = roleList;
+      },
       handleDelete(index, user){
         this.$alert('', '确认删除该用户?', {
           confirmButtonText: '确定',
@@ -126,12 +132,12 @@
         });
       },
       handleSubmitUser(){
-        let form = this.form;
-        let {roleId, password, userName, expirationTime} = form;
+        let {id, password, userName, expirationTime, roleId, roleName} = this.form;
         api.config.addUser({
+          id,
           roleId,
           userName,
-          password,
+          password: MD5(password),
           expirationTime,
         })
           .then(({data}) => {

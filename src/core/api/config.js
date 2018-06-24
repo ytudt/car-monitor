@@ -4,7 +4,7 @@ export function getUsers() {
 }
 
 export function addUser(params) {
-  return axios.post('api/adminuser/add', params);
+  return axios.post('api/adminuser/update', params);
 }
 
 export function delUser(id) {

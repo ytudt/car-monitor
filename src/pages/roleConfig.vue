@@ -1,6 +1,6 @@
 <template lang="pug">
   div.user-wrap
-    h1 权限列表
+    h1 角色列表
     el-table(:data="roleList"  align="center")
       el-table-column(label="角色名")
         template(slot-scope="scope")
@@ -14,7 +14,7 @@
           el-button(size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)") 删除
     div.add-user
       el-button(size="medium" @click="handleAddRole()" type="primary") 新增
-    el-dialog(:title="dialogTitle" :visible.sync="dialogFormVisible")
+    el-dialog(:title="dialogTitle" :visible.sync="dialogFormVisible" @close="initForm()")
       el-form(:model="form" label-width="60px")
         el-form-item(label="角色名")
           el-input(v-model="form.roleName")
