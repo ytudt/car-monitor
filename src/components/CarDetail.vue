@@ -12,9 +12,7 @@
       li.fl 李四
       li.fl 王五
     .video-wrap 我是视频
-      .container
-        div(id="flashContent" style="width:100%;height:100%")
-          p 看视频请打开大于11.1.0版本Adobe Flash Player
+      Flashvideo
     el-table(:data="tableData")
       el-table-column(label="门店")
         template(slot-scope="scope")
@@ -51,6 +49,7 @@
 
 <script>
   import Draggable from 'vuedraggable'
+  import Flashvideo from './Flashvideo'
   export default {
     name: 'CarDetail',
     props: {
@@ -59,7 +58,8 @@
       },
     },
     components: {
-      Draggable
+      Draggable,
+      Flashvideo,
     },
     data () {
       return {
@@ -83,12 +83,7 @@
       }
     },
     mounted(){
-      console.log(123);
-      // let pageHost = ((document.location.protocol == "https:") ? "https://" : "http://");
-      // document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" +
-      //   pageHost +
-      //   "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>"
-      // );
+
     },
     methods:{
       onDetailClick(){

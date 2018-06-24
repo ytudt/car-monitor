@@ -104,7 +104,6 @@
       initCarList(map, SimpleMarker){
         for(let i =0 ; i < this.carList.length; i++){
           let car = this.carList[i];
-          console.log(car);
           //创建SimpleMarker实例
           let marker = new SimpleMarker({
             iconTheme: 'default',

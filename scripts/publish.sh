@@ -1,2 +1,9 @@
 node build/build.js
-cp -a dist ../ytudt.github.io
+cp -R dist/ ../ytudt.github.io
+cd ../ytudt.github.io
+git add -A
+git commit -m "发布"
+git push
+rm -rf index.html
+rm -rf static
+cd ../car-monitor
