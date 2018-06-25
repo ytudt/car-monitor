@@ -8,7 +8,7 @@
             span.el-dropdown-link 目标车辆信息
             el-dropdown-menu(slot="dropdown")
               el-dropdown-item(v-for="(item, index) in carList" :key="index")
-                .content(@click="onCarClick(item.licenseNumber)") {{item.licenseNumber}}
+                .content(@click="onCarClick(item)") {{item.licenseNumber}}
         li.tab-item.fl
           el-dropdown
             span.el-dropdown-link 轨迹回放
@@ -25,7 +25,7 @@
                 <!--.content(@click="carNumber=item.licenseNumber") -->
         li.tab-item.fl
           router-link(:to="{ name: 'roleConfig'}") 配置台
-    CarDetail(v-if="showCarDetail")
+    CarDetail(v-if="carInfo" :carInfo="carInfo")
     .map-wrap()
       div(id="container")
 </template>
@@ -46,7 +46,7 @@
     data () {
       return {
         showCarDetail: false,
-        carNumber: null,
+        carInfo: null,
         carList: [],
         map: null,
         pathSimplifierIns: null,
@@ -115,16 +115,18 @@
             map: map,
             position: car.position
           });
-
           AMap.event.addListener(marker,'click',(e) =>{
-            this.onCarClick(e.target.G.label.content);
+            for(let item of this.carList){
+              if(item.licenseNumber === e.target.G.label.content){
+                 return this.onCarClick(item);
+              }
+            }
           });
         }
 
       },
-      onCarClick(carNumber){
-        this.carNumber = carNumber;
-        this.showCarDetail = true;
+      onCarClick(carInfo){
+        this.carInfo = carInfo;
         this.pathSimplifierIns.hide();
       },
       initPath(map, PathSimplifier){

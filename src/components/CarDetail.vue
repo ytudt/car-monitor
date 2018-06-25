@@ -43,7 +43,7 @@
           <!--div(@click="onDetailClick()")-->
             <!--span 明细-->
             <!--i.el-icon-caret-bottom-->
-    div 车厢温度: -10℃
+    div 车厢温度: {{carInfo.temp}}
 
 </template>
 
@@ -53,8 +53,11 @@
   export default {
     name: 'CarDetail',
     props: {
-      carNumber:{
-        type: String,
+      // carNumber:{
+      //   type: String,
+      // },
+      carInfo: {
+        type: Object,
       },
     },
     components: {
