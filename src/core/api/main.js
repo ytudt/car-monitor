@@ -3,6 +3,9 @@ export function getVehicles() {
   return axios.get('api/vehicle/list');
 }
 export function getLocation(params) {
-  // console.log(params);
   return axios.get('api/vehicle/location', {params});
+}
+
+export function getOrderList(params) {
+  return axios.get('api/order/list', {params});
 }

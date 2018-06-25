@@ -1,16 +1,18 @@
 <template lang="pug">
 
   .car-detail-wrap(v-drag="")
-    ul.detail-key.clr
-      li.fl 车牌号
-      li.fl 司机
-      li.fl 押运员1
-      li.fl 押运员1
-    ul.detail-value.clr
-      li.fl 京N12124
-      li.fl 张三
-      li.fl 李四
-      li.fl 王五
+    .close
+      .el-icon-close(@click="$emit('close')")
+    el-table(:data="carBasic"  align="center")
+      el-table-column(label="车牌号")
+        template(slot-scope="scope")
+          span {{licenseNumber}}
+      el-table-column(label="司机")
+        template(slot-scope="scope")
+          span {{scope.row.escort}}
+      el-table-column(label="押运员")
+        template(slot-scope="scope")
+          span {{scope.row.salesman}}
     .video-wrap 我是视频
       Flashvideo
     el-table(:data="tableData")
@@ -50,12 +52,10 @@
 <script>
   import Draggable from 'vuedraggable'
   import Flashvideo from './Flashvideo'
+  import api from 'api'
   export default {
     name: 'CarDetail',
     props: {
-      // carNumber:{
-      //   type: String,
-      // },
       carInfo: {
         type: Object,
       },
@@ -64,8 +64,22 @@
       Draggable,
       Flashvideo,
     },
+    computed: {
+      licenseNumber(){
+        console.log(1);
+        let licenseNumber = this.carInfo.licenseNumber;
+        this.getOrderList(licenseNumber);
+        return licenseNumber;
+      },
+      // carBasic(){
+      //   return [1];
+      //
+      // },
+    },
     data () {
       return {
+        carBasic: [1],
+        orderList: [],
         tableData: [{
           date: '2016-05-02',
           name: '王小虎',
@@ -92,6 +106,28 @@
       onDetailClick(){
         console.log(123);
       },
+      getOrderList(licenseNumber){
+        let date = new Date();
+        let Y = date.getFullYear();
+        let M = date.getMonth() + 1;
+        // TODO 这里先写死日期
+        // let D = date.getDate();
+        let D = 8;
+        api.main.getOrderList({
+          licenseNumber,
+          dispatchDate: `${Y}-${M}-${D}`,
+        })
+          .then(({data}) => {
+            this.orderList = data;
+            let data0 = data[0];
+            const {escort, salesman} = data0;
+            this.carBasic = [{
+              escort,
+              salesman,
+            }];
+            console.log(this.orderList.length);
+          });
+      },
     },
   }
 </script>
@@ -102,10 +138,22 @@
    position: fixed;
    top: 200px;
    right: 20px;
-  width: 400px;
+   width: 400px;
    background: red;
    z-index: 1;
    background: #f4f4f4;
+  padding: 10px;
+  .close{
+    height: 20px;
+    text-align: right;
+    .el-icon-close{
+      cursor: pointer;
+    }
+  }
+
+  .detail-key{
+    margin-top: 10px;
+  }
   .detail-key,.detail-value{
     width: 100%;
     li{
