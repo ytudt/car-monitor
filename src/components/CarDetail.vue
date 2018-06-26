@@ -15,13 +15,13 @@
           span {{scope.row.salesman}}
     .video-wrap 我是视频
       Flashvideo
-    el-table(:data="tableData")
+    el-table(:data="orderList" align="center")
       el-table-column(label="门店")
         template(slot-scope="scope")
-          span {{scope.row.date}}
+          span {{scope.row.customerName}}
       el-table-column(label="货物件数")
         template(slot-scope="scope")
-          span {{scope.row.date}}
+          span {{scope.row.dispatchNubmer}}
       el-table-column(label="状态")
         template(slot-scope="scope")
           span {{scope.row.date}}
@@ -71,10 +71,6 @@
         this.getOrderList(licenseNumber);
         return licenseNumber;
       },
-      // carBasic(){
-      //   return [1];
-      //
-      // },
     },
     data () {
       return {

@@ -3,7 +3,7 @@
     <div class="container">
       <div id="flashContent" style="width:100%;height:100%">
         <p>
-          To view this page ensure that Adobe Flash Player version 11.1.0 or greater is installed.
+          点击下方logo安装Flash
         </p>
         <a href="http://www.adobe.com/go/getflashplayer">
           <img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player">

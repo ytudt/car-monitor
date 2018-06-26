@@ -2,7 +2,6 @@
   .main-wrap
     Header.header
       ul.tab-list.clr
-        li.tab-item.fl 总览
         li.tab-item.fl()
           el-dropdown
             span.el-dropdown-link 目标车辆信息
