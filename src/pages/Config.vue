@@ -2,12 +2,8 @@
   div.config-wrap
     Header
       ul.config-list
-        li.config-item
-          router-link(:to="{ name: 'Main'}") 首页
-        li.config-item
-          router-link(:to="{ name: 'userConfig'}") 用户管理
-        li.config-item
-          router-link(:to="{ name: 'roleConfig'}") 角色管理
+        li.config-item(v-for="(item, index) in routeList" :key="index" v-bind:class="{select: item.routeName===currentRoute}")
+          router-link(:to="{ name: item.routeName}") {{item.text}}
     router-view
 </template>
 
@@ -18,13 +14,24 @@
   export default {
     data () {
       return {
+        currentRoute: '',
         dialogFormVisible: false,
         userList: [],
         form: {
           userName: '',
           password: '',
         },
+        routeList: [
+          {routeName: 'Main', text: '首页'},
+          {routeName: 'userConfig', text: '用户管理'},
+          {routeName: 'roleConfig', text: '角色管理'},
+        ],
 
+      }
+    },
+    watch:{
+      $route(to){
+        this.setCurrentRouteName(to && to.name);
       }
     },
     components: {
@@ -33,8 +40,12 @@
     computed:{
     },
     created(){
+      this.setCurrentRouteName(this.$route.name);
     },
     methods:{
+      setCurrentRouteName(name){
+        this.currentRoute = this.currentRoute = name;;
+      },
       handleAddUser(){
         this.dialogFormVisible = true;
         console.log(123);
@@ -70,6 +81,9 @@
         height: $header-height;
         line-height: $header-height;
         margin: 0 10px;
+        &.select{
+          background: $select-color;
+        }
       }
     }
     .add-user{

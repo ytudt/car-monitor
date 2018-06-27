@@ -23,7 +23,7 @@
                         li.fl 车次
                 <!--.content(@click="carNumber=item.licenseNumber") -->
         li.tab-item.fl
-          router-link(:to="{ name: 'roleConfig'}") 配置台
+          router-link(:to="{ name: 'userConfig'}") 配置台
     CarDetail(v-if="carInfo" :carInfo="carInfo" @close="carInfo=null")
     .map-wrap()
       div(id="container")

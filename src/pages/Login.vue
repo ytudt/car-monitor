@@ -8,7 +8,6 @@
       el-form-item(label="密码")
         el-input(:type="passwordType" v-model="password")
         span.show-password(@click="showPassword=!showPassword") {{showPassword ? 'HIDE' : 'SHOW'}}
-    div.err-mes(v-if="loginError") 用户名或密码错误
     .btn-wrap
       button.btn(:disabled="!userName||!password" v-bind:class="{disable: !userName||!password}" @click="login()") 登录
 </template>
@@ -17,6 +16,7 @@
   import MD5 from 'md5';
   import Cookies from 'js-cookie';
   import api from 'api';
+  import {timeMap} from 'constant'
   import Header from 'components/Header';
 
   export default {
@@ -28,8 +28,7 @@
       return {
         showPassword: false,
         userName: '',
-        password: '',
-        loginError: false,
+        password: ''
       }
     },
     computed:{
@@ -47,16 +46,16 @@
           password: MD5(this.password),
         })
         .then(({data}) => {
-          if(!data || !data.success) return this.loginError = true;
-          this.loginError = false;
-          Cookies.set('token', data.data, { expires: 6 * 1 / 24 });
+          if(!data || !data.success) return Promise.reject(data.message);
+          Cookies.set('token', data.data, { expires: timeMap.tokenValidTime * 1 / 24 });
           this.$router.push({
             name: 'Main',
           });
         })
-        .catch(() => {
+        .catch((err) => {
+          console.log(err);
           this.$message({
-            message: '登录失败,请检查网络重新尝试~',
+            message: err || '登录失败,请检查网络重新尝试~',
             type: 'error',
             center: true
           });

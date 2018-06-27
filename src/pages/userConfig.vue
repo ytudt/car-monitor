@@ -139,6 +139,7 @@
           userName,
           password: MD5(password),
           expirationTime,
+          enable: true,
         })
           .then(({data}) => {
             if(!data.success) return Promise.reject();
