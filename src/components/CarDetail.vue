@@ -9,12 +9,12 @@
           span {{licenseNumber}}
       el-table-column(label="司机")
         template(slot-scope="scope")
-          span {{scope.row.escort}}
+          span {{scope.row.driver}}
       el-table-column(label="押运员")
         template(slot-scope="scope")
           span {{scope.row.salesman}}
-    .video-wrap 我是视频
-      Flashvideo
+    .video-wrap
+      Flashvideo(:carInfo="carInfo")
     el-table(:data="orderList" align="center")
       el-table-column(label="门店")
         template(slot-scope="scope")
@@ -22,9 +22,6 @@
       el-table-column(label="货物件数")
         template(slot-scope="scope")
           span {{scope.row.dispatchNubmer}}
-      el-table-column(label="状态")
-        template(slot-scope="scope")
-          span {{scope.row.date}}
       el-table-column(label="明细")
         template(slot-scope="scope")
           el-dropdown
@@ -66,7 +63,6 @@
     },
     computed: {
       licenseNumber(){
-        console.log(1);
         let licenseNumber = this.carInfo.licenseNumber;
         this.getOrderList(licenseNumber);
         return licenseNumber;
@@ -115,12 +111,8 @@
         })
           .then(({data}) => {
             this.orderList = data;
-            let data0 = data[0];
-            const {escort, salesman} = data0;
-            this.carBasic = [{
-              escort,
-              salesman,
-            }];
+            let data0 = data[0] || {};
+            this.carBasic = [data0];
             console.log(this.orderList.length);
           });
       },
@@ -132,9 +124,9 @@
 <style lang="scss">
 .car-detail-wrap{
    position: fixed;
-   top: 200px;
+    top: 0;
    right: 20px;
-   width: 400px;
+  width: 600px;
    background: red;
    z-index: 1;
    background: #f4f4f4;

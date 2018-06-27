@@ -1,13 +1,91 @@
 <template>
-  <div class="flash-video-wrap">
-    <div class="container">
-      <div id="flashContent" style="width:100%;height:100%">
-        <p>
-          点击下方logo安装Flash
-        </p>
-        <a href="http://www.adobe.com/go/getflashplayer">
+  <div class="main">
+    <button id="btn-livePlayAll">播放所有</button>
+    <div class="left" v-show="false">
+      实时：
+      <br /> url：
+      <input id="url-live" type="text" v-model="videoServerUrl"/>
+      <br /> simID：
+      <input id="simId-live" type="text" v-model="carIdMap[carNumber]" />
+      <br /> 设备类型：
+      <input id="devType-live" type="text" value="0" />
+      <br /> 通道号：
+      <select id="devChn-live" style="width:80px;">
+        <option value="1" data-vid="">1</option>
+        <option value="2" data-vid="">2</option>
+        <option value="3" data-vid="">3</option>
+        <option value="4" data-vid="">4</option>
+      </select>
+      <button id="btn-livePlay">播放</button>
+      <!--<button id="btn-livePlayAll">播放所有</button>-->
+      <br /> 播放器ID：
+      <select id="playerNum-live" style="width:50px;">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+      <button id="btn-liveStop">停止</button>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <hr /> 回放：
+      <br /> url：
+      <input id="url-replay" type="text" v-model="videoServerUrl"/>
+      <br /> simID：
+      <input id="simId-replay" type="text" v-model="carIdMap[carNumber]" />
+      <br /> 设备类型：
+      <input id="devType-replay" type="text" value="0" />
+      <br /> 通道号：
+      <select id="devChn-replay" style="width:150px;">
+        <option value="1" data-vid="">1</option>
+        <option value="2" data-vid="">2</option>
+        <option value="3" data-vid="">3</option>
+        <option value="4" data-vid="">4</option>
+      </select>
+      <br /> 开始时间：
+      <input id="beginTime" type="text" />
+      <br /> 结束时间：
+      <input id="endTime" type="text" />
+      <br /> 当前页：
+      <select id="dd_page">
+        <option value="0">1</option>
+      </select>
+      <button id="btn_searchFile">查询文件</button>
+      <br /> 当前文件：
+      <select id="dd_file"></select>
+      <button id="btn_play">播放</button>
+      <br /> 播放器ID：
+      <select id="playerNum-Replay" style="width:50px;">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+      <button id="btn_stopReplay">停止</button>
+      <br />
+      <br />
+      <label style="color:red">注：同一设备只能同时回放一路视频</label>
+    </div>
+    <div class="right">
+      <!--<div class="banner">-->
+        <!--<button onclick="setLayout(1)">1</button>-->
+        <!--<button onclick="setLayout(4)">4</button>-->
+        <!--<button onclick="setLayout(9)">9</button>-->
+        <!--<button onclick="setLayout(16)">16</button>-->
+      <!--</div>-->
+      <div class="container">
+        <div id="flashContent" style="width:100%;height:100%">
+          <p>
+            点击图标安装flash播放视频
+          </p>
+          <a href="http://www.adobe.com/go/getflashplayer">
           <img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player">
-        </a>
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -15,15 +93,27 @@
 
 <script>
   import Cookies from 'js-cookie';
-  export default {
-    name: 'HelloWorld',
+  import {videoInfo} from 'constant';
+   export default {
+    props: {
+      carInfo: {
+        type: Object,
+      },
+    },
     data () {
       return {
-        msg: 'Welcome to Your Vue.js App',
-        carNumber: '京Q83YC7',
       }
     },
     computed:{
+      carNumber(){
+        return this.carInfo.licenseNumber;
+      },
+      carIdMap(){
+        return videoInfo.carIdMap;
+      },
+      videoServerUrl(){
+        return videoInfo.videoServerUrl;
+      },
     },
     mounted(){
       this.initVideo();
@@ -31,8 +121,8 @@
     },
     methods:{
       initVideo(){
+        var carNumber = this.carNumber;
         let objFlash = bsjflashobj;
-        console.log(objFlash);
         $(function () {
           $("#simId-replay").attr("data-session", objFlash.getDateUnix());
           $("#simId-live").attr("data-session", objFlash.getDateUnix());
@@ -54,7 +144,7 @@
             objFlash.live.close(parseInt(videoId));
 
           });
-
+          //
           $("#btn-livePlayAll").click(function () {
             var src = $("#url-live").val();
             var max = $("#devChn-live").val();
@@ -168,20 +258,6 @@
     $("#endTime").val(n.toJSON().substring(0, 16).replace("T", " "));
     n.setDate(n.getDate() - 1);
     $("#beginTime").val(n.toJSON().substring(0, 16).replace("T", " "));
-    // $('#beginTime').datetimepicker({
-    //   lang: 'ch',
-    //   timepicker: false,
-    //   scrollInput: false,
-    //   format: 'Y-m-d H:i',
-    //   formatDate: 'Y-m-d H:i',
-    // });
-    // $("#endTime").datetimepicker({
-    //   lang: 'ch',
-    //   timepicker: false,
-    //   scrollInput: false,
-    //   format: 'Y-m-d H:i',
-    //   formatDate: 'Y-m-d H:i',
-    // });
   }
 
   function flashCallback(type, param, videoId, data) {
@@ -204,4 +280,24 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
+  .main {
+    width: 100%;
+    /*height: 750px;*/
+    margin: 3px;
+    margin: 0 auto;
+  }
+
+  .right {
+    width: 100%;
+    height: 400px;
+    margin: 1px;
+    text-align: left;
+    float: left;
+  }
+
+  .container {
+    height: 95%;
+    border: 1px solid blue;
+    margin: 1px;
+  }
 </style>

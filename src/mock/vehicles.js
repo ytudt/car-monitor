@@ -1,19 +1,31 @@
 import Mock from 'mockjs';
 
-Mock.mock(/api\/vehicles$/, 'get', {
+Mock.mock(/api\/vehicle\/list$/, 'get', {
   "success": true,
   "data": [
-    {"id": 111, "carNumber": "京A1111", "lat": 39.9077, "lng": 116.426285, "online": true},
-    {"id": 12, "carNumber": "京A22222", "lat": 39.9377, "lng": 116.437285, "online": false},
-    {"id": 12, "carNumber": "京A33333", "lat": 39.9677, "lng": 116.448285, "online": false},
-    {"id": 12, "carNumber": "京A44444", "lat": 39.9977, "lng": 116.459285, "online": true},
-    {"id": 12, "carNumber": "京A55555", "lat": 39.9177, "lng": 116.460285, "online": false},
+    {"id": 111, "licenseNumber": "京Q83YC7", "lat": 39.9077, "lng": 116.426285, "online": true},
+    {"id": 12, "licenseNumber": "京Q94YB8", "lat": 39.9377, "lng": 116.437285, "online": false},
+    {"id": 12, "licenseNumber": "京PT7P52", "lat": 39.9677, "lng": 116.448285, "online": false},
+    {"id": 12, "licenseNumber": "京Q15XY6", "lat": 39.9977, "lng": 116.459285, "online": true},
+    {"id": 12, "licenseNumber": "京Q1Y2U6", "lat": 39.9177, "lng": 116.460285, "online": false},
   ],
   "messageCode": null,
   "message": "登录成功!"
 });
 
-Mock.mock(/api\/vehicle\/京A1111/, 'get', {
+Mock.mock(/api\/vehicle\/location/, 'get', {
+  "success": true,
+  "data": {
+
+    data: {
+      temp: 10,
+    }
+  },
+  "messageCode": null,
+  "message": "登录成功!"
+});
+
+Mock.mock(/api\/vehicle\/京Q83YC7/, 'get', {
   "success": true,
   "data": [{
     "lat": 39.90015,
@@ -41,7 +53,7 @@ Mock.mock(/api\/vehicle\/京A1111/, 'get', {
 });
 
 
-Mock.mock(/api\/vehicle\/京A1111/, 'get', {
+Mock.mock(/api\/vehicle\/京Q94YB8/, 'get', {
   "success": true,
   "data": [{
     "lat": 39.90015,
@@ -95,4 +107,9 @@ Mock.mock(/api\/vehicle\/京A22222/, 'get', {
   "messageCode": null,
   "message": "登录成功!"
 });
+
+Mock.mock(/api\/order\/list/, 'get', [{
+  escort: '张三',
+  salesman: '李四',
+}]);
 

@@ -3,17 +3,19 @@
     .company-ingo
       .img 公司logo
       span.name 北京*****公司
+      span.version 版本号: {{syeVersion}}
     slot
     .logout(v-if="showLogOut" @click="logOut") 退出登录
 </template>
 
 <script>
   import Cookies from 'js-cookie';
+  import {syeVersion} from 'constant';
   export default {
     name: 'HelloWorld',
     data () {
       return {
-        msg: 'Welcome to Your Vue.js App'
+        syeVersion: syeVersion,
       }
     },
     computed:{
@@ -43,17 +45,22 @@
       height: $header-height;
       float: left;
       color: #fff;
-      .name,.img{
+      .name,.img,.version{
         float: left;
+        display: inline-block;
+        margin-left: 5px;
       }
       .img{
-        display: inline-block;
         width: 90px;
         height: 100%
       }
       .name{
         font-size: 20px;
         height: $header-height;
+        line-height: $header-height;
+      }
+      .version{
+        color: #ccc;
         line-height: $header-height;
       }
     }

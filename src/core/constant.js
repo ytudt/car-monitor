@@ -1,1 +1,22 @@
+export const syeVersion = 'Alpha 0.0.2';
+
 export const serverUrl = 'http://114.55.124.75:7754';
+
+export const videoInfo = {
+  videoServerUrl: 'http://61.135.149.18:9998',
+  port: '9998',
+  userName: 'spgyc',
+  passWord: '000000',
+  carIdMap: {
+    "京Q83YC7": "14150377592",
+    "京Q94YB8": "14150377589",
+    "京PT7P52": "14150377591",
+    "京PT8P32": "14150377590",
+    "京Q12F03": "14150377588",
+    "京Q15XY6": "14150377586",
+    "京Q25XL9": "14150377585",
+    "京Q60VR5": "14150377583",
+    "京Q27YC0": "14150377587",
+    "京Q1Y2U6": "14150377584",
+  },
+};
