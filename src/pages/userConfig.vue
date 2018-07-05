@@ -1,6 +1,5 @@
 <template lang="pug">
   div.user-wrap
-    h1 用户列表
     el-table(:data="userList"  align="center")
       el-table-column(label="用户名")
         template(slot-scope="scope")
@@ -162,7 +161,6 @@
 <style lang="scss" scoped>
   .user-wrap{
     box-sizing: border-box;
-    padding: 10px 100px 0;
     .add-user{
       margin-top: 20px;
     }

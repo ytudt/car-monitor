@@ -2,15 +2,20 @@
   div.config-wrap
     Header
       ul.config-list
-        li.config-item(v-for="(item, index) in routeList" :key="index" v-bind:class="{select: item.routeName===currentRoute}")
-          router-link(:to="{ name: item.routeName}") {{item.text}}
-    router-view
+        li.config-item
+          router-link(:to="{ name: 'Main'}") 首页
+        li.config-item(v-for="(item, index) in routeList" :key="index" v-bind:class="{select: item.name===currentRoute}")
+          router-link(:to="{ name: item.name}") {{item.meta.title}}
+    div.config-content
+      router-view
 </template>
 
 <script>
   import Header from 'components/Header';
   import {Message} from 'element-ui';
   import api from 'api';
+  import configRoutes from 'src/router/configRoutes'
+
   export default {
     data () {
       return {
@@ -21,11 +26,7 @@
           userName: '',
           password: '',
         },
-        routeList: [
-          {routeName: 'Main', text: '首页'},
-          {routeName: 'userConfig', text: '用户管理'},
-          {routeName: 'roleConfig', text: '角色管理'},
-        ],
+        routeList: configRoutes,
 
       }
     },
@@ -86,8 +87,8 @@
         }
       }
     }
-    .add-user{
-      margin-top: 20px;
+    .config-content{
+      padding: 10px 100px;
     }
   }
 </style>

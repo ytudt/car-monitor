@@ -1,12 +1,13 @@
 <template lang="pug">
 .login-wrap
-  Header
+  //Header
   .form-wrap
+    div.login-text 用户登录
     el-form
-      el-form-item(label="用户名")
-        el-input(v-model="userName" autofocus)
-      el-form-item(label="密码")
-        el-input(:type="passwordType" v-model="password")
+      el-form-item
+        el-input(v-model="userName" autofocus placeholder="用户名")
+      el-form-item
+        el-input(:type="passwordType" v-model="password" placeholder="密码")
         span.show-password(@click="showPassword=!showPassword") {{showPassword ? 'HIDE' : 'SHOW'}}
     .btn-wrap
       button.btn(:disabled="!userName||!password" v-bind:class="{disable: !userName||!password}" @click="login()") 登录
@@ -17,6 +18,7 @@
   import Cookies from 'js-cookie';
   import api from 'api';
   import {timeMap} from 'constant'
+  import {isString} from 'util'
   import Header from 'components/Header';
 
   export default {
@@ -53,9 +55,9 @@
           });
         })
         .catch((err) => {
-          console.log(err);
+          let errMsg = err && isString(err) ? err : '登录失败,请检查网络重新尝试~';
           this.$message({
-            message: err || '登录失败,请检查网络重新尝试~',
+            message: errMsg,
             type: 'error',
             center: true
           });
@@ -65,33 +67,50 @@
   }
 </script>
 <style scoped lang="scss">
-  .form-wrap{
-    width: 400px;
-    background: #fff;
-    margin: 150px auto;
-    padding: 20px;
-    .show-password{
-      position: absolute;
-      right: 10px;
-      color: #666;
-      cursor: pointer;
-    }
-    .err-mes{
-      color: red;
-      font-size: 16px;
-      text-align: center;
-    }
-    .btn-wrap{
-      text-align: center;
-      margin-top: 10px;
-      .btn{
-        border-radius: 5px;
-        color: #fff;
-        width: 100%;
-        height: 40px;
-        background: $base-color;
-        &.disable{
-          background: #ccc;
+  .login-wrap{
+    width: 100%;
+    height: 100%;
+    background: url("~assets/login-bg.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding-top: 150px;
+    box-sizing: border-box;
+    .form-wrap{
+      width: 400px;
+      background: #fff;
+      margin: 0px auto;
+      padding: 20px;
+      border-radius: 10px;
+      .login-text{
+        color: #333;
+        font-size: 20px;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .show-password{
+        position: absolute;
+        right: 10px;
+        color: #666;
+        cursor: pointer;
+      }
+      .err-mes{
+        color: red;
+        font-size: 16px;
+        text-align: center;
+      }
+      .btn-wrap{
+        text-align: center;
+        margin-top: 10px;
+        .btn{
+          border-radius: 5px;
+          color: #fff;
+          width: 100%;
+          height: 40px;
+          background: $base-color;
+          outline: none;
+          &.disable{
+            background: #ccc;
+          }
         }
       }
     }

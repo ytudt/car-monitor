@@ -1,4 +1,4 @@
-export const syeVersion = 'Alpha 0.0.4';
+export const syeVersion = 'Alpha 0.1.1';
 
 export const serverUrl = 'http://114.55.124.75:7754';
 
@@ -18,9 +18,11 @@ export const videoInfo = {
     "京Q60VR5": "14150377583",
     "京Q27YC0": "14150377587",
     "京Q1Y2U6": "14150377584",
+    "P52": "14150377584",
   },
 };
 
 export const timeMap = {
-  tokenValidTime: 6, // 单位小时
+  tokenValidTime: 600, // 单位小时
+  videoPlayTime: 5 * 60 * 1000,
 };

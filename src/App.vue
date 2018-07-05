@@ -1,22 +1,21 @@
 <template lang="pug">
-  keep-alive
-    router-view(v-if="$route.meta.KeepAlive")
-    router-view(v-else)
+  div.app-wrap
+    router-view
+    Dialog
 </template>
 
 <script>
+import Dialog from 'components/Dialog';
 export default {
-  name: 'App'
+  name: 'App',
+  components:{
+    Dialog,
+  }
 }
 </script>
 
 <style scoped lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.app-wrap{
+  height: 100%;
 }
 </style>

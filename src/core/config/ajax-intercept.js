@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import {serverUrl} from '../constant';
+import eventHub from 'util/eventHub';
 
 
 axios.defaults.timeout = 5000;
@@ -17,6 +18,16 @@ axios.interceptors.request.use((request) => {
 });
 
 axios.interceptors.response.use((response) => {
+  if(response.data && response.data.messageCode === 401){
+    eventHub.$emit('show-alert', {
+      title: '登录信息已过期',
+      content: '是否重新登录?',
+      callback: () => {
+        Cookies.remove('token');
+        return location.href = `${location.origin}/#/login`;
+      },
+    })
+  }
   return response;
 }, (err) => {
   if(err.response && (err.response.status == 401)){

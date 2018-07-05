@@ -52,6 +52,7 @@
       }
     },
     created(){
+      console.log(123);
       this.getCarList();
     },
     mounted(){
@@ -125,8 +126,12 @@
 
       },
       onCarClick(carInfo){
-        this.carInfo = carInfo;
-        this.pathSimplifierIns.hide();
+        this.carInfo = null;
+        this.$nextTick(() => {
+          this.carInfo = carInfo;
+          this.pathSimplifierIns.hide();
+        });
+
       },
       initPath(map, PathSimplifier){
         this.pathSimplifierIns = new PathSimplifier({

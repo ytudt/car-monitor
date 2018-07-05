@@ -1,6 +1,5 @@
 <template lang="pug">
   div.user-wrap
-    h1 角色列表
     el-table(:data="roleList"  align="center")
       el-table-column(label="角色名")
         template(slot-scope="scope")
@@ -21,8 +20,6 @@
       div.dialog-footer
         el-button(@click="dialogFormVisible = false") 取消
         el-button(type="primary" @click="handleSubmitRole()" :disabled="!form.roleName") 确定
-
-
 </template>
 
 <script>
@@ -120,7 +117,6 @@
 <style lang="scss" scoped>
   .user-wrap{
     box-sizing: border-box;
-    padding: 10px 100px 0;
     .add-user{
       margin-top: 20px;
     }

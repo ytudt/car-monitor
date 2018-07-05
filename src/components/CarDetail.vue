@@ -12,7 +12,7 @@
           span {{scope.row.driver}}
       el-table-column(label="押运员")
         template(slot-scope="scope")
-          span {{scope.row.salesman}}
+          span {{scope.row.escort}}
     .video-wrap
       Flashvideo(:carInfo="carInfo")
     el-table(:data="orderList" align="center")
@@ -96,7 +96,6 @@
     },
     methods:{
       onDetailClick(){
-        console.log(123);
       },
       getOrderList(licenseNumber){
         let date = new Date();
@@ -113,7 +112,6 @@
             this.orderList = data;
             let data0 = data[0] || {};
             this.carBasic = [data0];
-            console.log(this.orderList.length);
           });
       },
     },

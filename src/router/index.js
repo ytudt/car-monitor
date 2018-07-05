@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Cookies from 'js-cookie';
+import configRoutes from './configRoutes';
 
 
 Vue.use(Router);
@@ -17,28 +18,14 @@ const router = new Router({
       name: 'Main',
       component: (r) => require.ensure([], () => r(require('src/pages/Main')), 'main'),
       meta:{
-        KeepAlive: true,
+        KeepAlive: false,
       },
     },
     {
       path: '/config',
       name: 'Config',
       component: (r) => require.ensure([], () => r(require('src/pages/Config')), 'Config'),
-      children: [
-        {
-          path: 'user',
-          name: 'userConfig',
-          component: (r) => require.ensure([], () => r(require('src/pages/userConfig')), 'userConfig'),
-        },
-        {
-          path: 'role',
-          name: 'roleConfig',
-          component: (r) => require.ensure([], () => r(require('src/pages/roleConfig')), 'roleConfig'),
-          meta: {
-            title: '在线申请',
-          },
-        },
-      ],
+      children: configRoutes,
     },
   ],
 });

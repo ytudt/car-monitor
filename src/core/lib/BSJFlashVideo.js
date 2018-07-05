@@ -169,6 +169,7 @@ var bsjflash = function () {
       var startTime = getDateUnix();
       var h = setInterval(function () {
         flashobj = document.getElementById(flashId);
+        window.flashobj = flashobj;
         if (flashobj) {
           if (videoCount > 0) {
             initFlash(cbName, videoCount, mode);
