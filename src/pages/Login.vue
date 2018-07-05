@@ -1,16 +1,16 @@
 <template lang="pug">
-.login-wrap
+.login-wrap(id="target")
   //Header
   .form-wrap
     div.login-text 用户登录
     el-form
       el-form-item
-        el-input(v-model="userName" autofocus placeholder="用户名")
+        el-input(v-model="userName" placeholder="用户名")
       el-form-item
         el-input(:type="passwordType" v-model="password" placeholder="密码")
         span.show-password(@click="showPassword=!showPassword") {{showPassword ? 'HIDE' : 'SHOW'}}
     .btn-wrap
-      button.btn(:disabled="!userName||!password" v-bind:class="{disable: !userName||!password}" @click="login()") 登录
+      button.btn(:disabled="btnDisable" @click="login()") 登录
 </template>
 
 <script>
@@ -37,11 +37,15 @@
       passwordType(){
         return this.showPassword ? '' : 'password';
       },
-    },
-    created(){
+      btnDisable(){
+        const {userName, password} = this;
+        return !userName||!password;
+      },
+
     },
     methods:{
       login(){
+
         this.showPassword = false;
         api.login.doLogin({
           userName: this.userName,
@@ -73,7 +77,7 @@
     background: url("~assets/login-bg.jpeg");
     background-repeat: no-repeat;
     background-size: cover;
-    padding-top: 150px;
+    padding-top: 200px;
     box-sizing: border-box;
     .form-wrap{
       width: 400px;
@@ -108,9 +112,6 @@
           height: 40px;
           background: $base-color;
           outline: none;
-          &.disable{
-            background: #ccc;
-          }
         }
       }
     }

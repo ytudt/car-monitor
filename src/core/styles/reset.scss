@@ -58,6 +58,10 @@ h1, h2, h3, h4, h5, h6{
   font-weight: normal;
 }
 
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+}
+
 .clr:after{
   content: "020";
   display: block;
