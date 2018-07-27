@@ -10,7 +10,7 @@
         el-input(:type="passwordType" v-model="password" placeholder="密码")
         span.show-password(@click="showPassword=!showPassword") {{showPassword ? 'HIDE' : 'SHOW'}}
     .btn-wrap
-      button.btn(:disabled="btnDisable" @click="login()") 登录
+      button.btn(@click="login()") 登录
 </template>
 
 <script>
@@ -45,7 +45,13 @@
     },
     methods:{
       login(){
-
+        if(this.btnDisable){
+          return this.$message({
+            message: '用户名或密码不能为空~',
+            type: 'warning',
+            center: true
+          });
+        }
         this.showPassword = false;
         api.login.doLogin({
           userName: this.userName,

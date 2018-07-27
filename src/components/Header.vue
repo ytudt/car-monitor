@@ -1,9 +1,8 @@
 <template lang="pug">
   .header-wrap
     .company-ingo
-      .img 公司logo
+      .logo
       span.name 北京*****公司
-      span.version 版本号: {{syeVersion}}
     slot
     .logout(v-if="showLogOut" @click="logOut") 退出登录
 </template>
@@ -45,15 +44,24 @@
       height: $header-height;
       float: left;
       color: #fff;
+      .logo{
+        background: url("~assets/logo.png");
+        width: 80px;
+        height: $header-height;
+        background-size: 80px $header-height;
+        background-repeat: no-repeat;
+        display: inline-block;
+        float: left;
+      }
       .name,.img,.version{
         float: left;
         display: inline-block;
         margin-left: 5px;
       }
-      .img{
-        width: 90px;
-        height: 100%
-      }
+      /*.img{*/
+        /*width: 90px;*/
+        /*height: 100%*/
+      /*}*/
       .name{
         font-size: 20px;
         height: $header-height;

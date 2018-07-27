@@ -18,7 +18,7 @@ axios.interceptors.request.use((request) => {
 });
 
 axios.interceptors.response.use((response) => {
-  if(response.data && response.data.messageCode === 401){
+  if(response.data && response.data.messageCode === 401 && location.href.indexOf('/login') === -1){
     eventHub.$emit('show-alert', {
       title: '登录信息已过期',
       content: '是否重新登录?',

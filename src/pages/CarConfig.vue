@@ -47,13 +47,15 @@
   .car-config-wrap{
     background: #fff;
     .config-item{
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid $border-color-gray;
       padding: 20px 0;
       text-align: left;
       padding-left: 50px;
       .text{
         display: inline-block;
         margin-right: 10px;
+        font-size: 14px;
+        color: #606266;
       }
       .select{
         display: inline-block;

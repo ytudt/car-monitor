@@ -1,4 +1,4 @@
-export const syeVersion = 'Alpha 0.1.1';
+export const syeVersion = 'Alpha 0.1.4';
 
 export const serverUrl = 'http://114.55.124.75:7754';
 
@@ -23,6 +23,7 @@ export const videoInfo = {
 };
 
 export const timeMap = {
-  tokenValidTime: 600, // 单位小时
-  videoPlayTime: 5 * 60 * 1000,
+  tokenValidTime: 600, // token有效时间 单位小时
+  videoPlayTime: 5 * 60 * 1000, // 视频播放时长
+  carRefreshTime: 60 * 1000, // 车辆实时位置刷新时间
 };

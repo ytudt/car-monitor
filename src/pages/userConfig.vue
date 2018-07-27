@@ -1,6 +1,6 @@
 <template lang="pug">
   div.user-wrap
-    el-table(:data="userList"  align="center")
+    el-table(:data="userList"  align="center" header-cell-class-name="background-f5")
       el-table-column(label="用户名")
         template(slot-scope="scope")
           span {{scope.row.userName}}
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-  import {Message} from 'element-ui';
+  import message from 'util/message';
   import MD5 from 'md5';
   import api from 'api';
 
@@ -72,12 +72,7 @@
           .then(({data}) => {
             this.userList = data && data.data || [];
           })
-          .catch(() => {
-            Message({
-              type: 'error',
-              message: '获取用户列表,请刷新重试~',
-            });
-          });
+          .catch(() => message.error('获取用户列表,请刷新重试~'));
       },
       handleAddUser(){
         this.dialogFormVisible = true;
@@ -121,12 +116,7 @@
                 });
                 this.getUserList();
               })
-              .catch(() => {
-                Message({
-                  type: 'error',
-                  message: '删除用户失败,请重新尝试~',
-                });
-              });
+              .catch(() => message.error('删除用户失败,请重新尝试~'));
           }
         });
       },
@@ -147,10 +137,7 @@
             this.initForm();
           })
           .catch(() => {
-            Message({
-              type: 'error',
-              message: '新增用户失败,请重新尝试~',
-            });
+            message.error('新增用户失败,请重新尝试~');
             this.dialogFormVisible = false;
             this.initForm();
           });

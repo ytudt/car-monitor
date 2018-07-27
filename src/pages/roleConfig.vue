@@ -1,6 +1,6 @@
 <template lang="pug">
   div.user-wrap
-    el-table(:data="roleList"  align="center")
+    el-table(:data="roleList"  align="center" header-cell-class-name="background-f5")
       el-table-column(label="角色名")
         template(slot-scope="scope")
           span {{scope.row.roleName}}
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-  import {Message} from 'element-ui';
+  import message from 'util/message'
   import api from 'api';
   export default {
     data () {
@@ -47,12 +47,7 @@
           .then(({data}) => {
             this.roleList = data && data.data || [];
           })
-          .catch(() => {
-            Message({
-              type: 'error',
-              message: '获取用户列表,请刷新重试~',
-            });
-          });
+          .catch(() =>  message.error('获取用户列表,请刷新重试~'));
       },
       initForm() {
         this.form = {roleName: '', id: ''};
@@ -80,12 +75,7 @@
                 });
                 this.getRoleList();
             })
-              .catch(() => {
-                Message({
-                  type: 'error',
-                  message: '删除角色失败,请重新尝试~',
-                });
-              });
+              .catch(() => message.error('删除角色失败,请重新尝试~'));
           }
         });
       },
@@ -105,10 +95,7 @@
           .catch(() => {
             this.dialogFormVisible = false;
             this.initForm();
-            Message({
-              type: 'error',
-              message: '新增角色失败,请重新尝试~',
-            });
+            message.error('新增角色失败,请重新尝试~')
           });
       },
     },

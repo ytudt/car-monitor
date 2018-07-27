@@ -92,4 +92,12 @@ export function extend(dst, ...objs) {
 
 export function noop() {}
 
+export function getYMD(data) {
+  if(!data) return '';
+  let y = data.getFullYear();
+  let m = data.getMonth() + 1;
+  let d = data.getDate();
+  return `${y}-${m}-${d}`;
+}
+
 

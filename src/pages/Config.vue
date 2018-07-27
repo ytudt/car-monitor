@@ -1,33 +1,27 @@
 <template lang="pug">
   div.config-wrap
     Header
-      ul.config-list
-        li.config-item
-          router-link(:to="{ name: 'Main'}") 首页
-        li.config-item(v-for="(item, index) in routeList" :key="index" v-bind:class="{select: item.name===currentRoute}")
-          router-link(:to="{ name: item.name}") {{item.meta.title}}
-    div.config-content
-      router-view
+      div.back
+        router-link(:to="{ name: 'Main'}") 首页
+    div.config-body
+      .aside
+        ul.config-list
+          li.config-item(v-for="(item, index) in routeList" :key="index" v-bind:class="{select: item.name===currentRoute}")
+            router-link(:to="{ name: item.name}")
+              div.link {{item.meta.title}}
+      .content
+        router-view
 </template>
 
 <script>
   import Header from 'components/Header';
-  import {Message} from 'element-ui';
-  import api from 'api';
   import configRoutes from 'src/router/configRoutes'
 
   export default {
     data () {
       return {
         currentRoute: '',
-        dialogFormVisible: false,
-        userList: [],
-        form: {
-          userName: '',
-          password: '',
-        },
         routeList: configRoutes,
-
       }
     },
     watch:{
@@ -47,48 +41,63 @@
       setCurrentRouteName(name){
         this.currentRoute = this.currentRoute = name;;
       },
-      handleAddUser(){
-        this.dialogFormVisible = true;
-        console.log(123);
-      },
-      handleSubmitUser(){
-        let form = this.form;
-        let {expirationTime, password, roleId, userName} = form;
-        console.log(456);
-        api.user.addUser({
-          userName,
-          password,
-        })
-          .then(({data}) => {
-            console.log(data);
-          })
-          .catch(() => {
-            Message({
-              type: 'error',
-              message: '新增用户失败,请重新尝试~',
-            });
-          });
-      },
     },
   }
 </script>
 <style lang="scss" scoped>
   .config-wrap{
     box-sizing: border-box;
-    .config-list{
-      .config-item{
-        float: left;
+    height: 100%;
+      height: $header-height;
+      .back{
+        display: inline-block;
+        height: 100%;
         color: #fff;
-        height: $header-height;
         line-height: $header-height;
-        margin: 0 10px;
-        &.select{
-          background: $select-color;
+        float: left;
+        margin-left: 10px;
+        cursor: pointer;
+      }
+    .config-body{
+      position: absolute;
+      top: $header-height;
+      bottom: 0;
+      width: 100%;
+      background: #f7f7f7;
+      padding: 10px;
+      box-sizing: border-box;
+      .aside{
+        height: 100%;
+        float: left;
+        width: 200px;
+        background: #fff;
+        border: 1px solid $border-color-gray;
+        margin-right: 10px;
+        .config-list{
+          height: 100%;
+          .config-item{
+            color: #000;
+            height: $header-height;
+            line-height: $header-height;
+            &.select,&:hover{
+              color: $font-color-blue;
+              background: #f3faff;
+            }
+            .link{
+              height: 100%;
+            }
+          }
         }
       }
-    }
-    .config-content{
-      padding: 10px 100px;
+      .content{
+        border: 1px solid $border-color-gray;
+        border-left: none;
+        height: 100%;
+        overflow: hidden;
+        background: #fff;
+        box-sizing: border-box;
+
+      }
     }
   }
 </style>

@@ -57,5 +57,9 @@ http://20913x9d41.imwork.net:22982/web/login.jsp
 3.货物信息在浮窗中展示还是在车辆图标旁边？(需求1.3矛盾)
 4.卸货后在哪展示？
 5.商品信息和货物信息不是一个东西吗？
+ ## 接口
 
+行程：api/trip/list?licenseNumber=P52
+位置点集合：api/trip/pois/?tripId=5
+订单：api/order/list?licenseNumber=P52&dispatchDate=2018-06-08
 

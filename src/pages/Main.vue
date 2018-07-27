@@ -32,8 +32,9 @@
 <script>
   import axios from 'axios';
   import api from 'api';
-  import {extend} from "util";
-  import {Message} from 'element-ui';
+  import {extend} from 'util';
+  import message from 'util/message'
+  import {timeMap} from "constant";
   import Header from 'components/Header';
   import CarDetail from 'components/CarDetail';
   export default {
@@ -49,11 +50,11 @@
         carList: [],
         map: null,
         pathSimplifierIns: null,
+        refreshTimer: null,
       }
     },
     created(){
-      console.log(123);
-      this.getCarList();
+      this.initCarList();
     },
     mounted(){
       this.map = new AMap.Map('container', {
@@ -65,22 +66,31 @@
       AMap.plugin(['AMap.ToolBar'], () => map.addControl(new AMap.ToolBar()));
       AMapUI.load(['ui/misc/PathSimplifier'], (PathSimplifier) => this.initPath(map, PathSimplifier));
     },
+    beforeDestroy(){
+      clearInterval(this.refreshTimer);
+    },
     methods: {
-      getCarList(){
+      initCarList(){
         api.main.getVehicles()
-          .then(({data}) => {
-            let carList = data.data || [];
-            return this.getCarLocation(carList);
-          })
-          .then(() => {
-            AMapUI.loadUI(['overlay/SimpleMarker'], (SimpleMarker) => this.initCarList(this.map, SimpleMarker));
-          })
-          .catch(() => {
-            Message({
-              type: 'error',
-              message: '车辆数据获取失败,请刷新重试~',
+        .then(({data}) => {
+          let carList = data.data || [];
+          this.refreshCarLocation(carList);
+        })
+        .catch(() => message.error('车辆数据获取失败,请刷新重试~'));
+      },
+      refreshCarLocation(carList){
+        AMapUI.loadUI(['overlay/SimpleMarker'], (SimpleMarker) => {
+          this.getCarLocation(carList)
+            .then(() => {
+              this.setMarker(this.map, SimpleMarker);
             });
-          });
+          this.refreshTimer = setInterval(() => {
+            this.getCarLocation(carList)
+              .then(() => {
+                this.setMarker(this.map, SimpleMarker);
+              });
+          }, timeMap.carRefreshTime);
+        });
       },
       getCarLocation(carList){
         let promises = Promise.all(carList.map((car) => {
@@ -88,26 +98,27 @@
             api.main.getLocation({
               licenseNumber: car.licenseNumber,
             })
-              .then((res) => {
-                car = extend(car, res.data.data[0]);
-                car.position = [car.lng, car.lat];
-                this.carList = carList;
-                resolve();
-              })
-              .catch(() => {
-                reject();
-              });
+            .then((res) => {
+              car = extend(car, res.data.data);
+              car.position = [car.lng, car.lat];
+              this.carList = carList;
+              resolve();
+            })
+            .catch(() => reject());
           });
         }));
         return promises;
       },
-      initCarList(map, SimpleMarker){
+      setMarker(map, SimpleMarker){
         for(let i =0 ; i < this.carList.length; i++){
           let car = this.carList[i];
+          let isOnline = car.state && car.state.indexOf('ACC熄火') === -1;
+          console.log(car.state);
+          car.marker && (map.remove(car.marker));
           //创建SimpleMarker实例
-          let marker = new SimpleMarker({
+          car.marker = new SimpleMarker({
             iconTheme: 'default',
-            iconStyle: car.online ? 'red' : 'blue',
+            iconStyle: isOnline ? 'red' : 'blue',
             label: {
               content: car.licenseNumber,
               offset: new AMap.Pixel(40, 0)
@@ -115,15 +126,16 @@
             map: map,
             position: car.position
           });
-          AMap.event.addListener(marker,'click',(e) =>{
-            for(let item of this.carList){
-              if(item.licenseNumber === e.target.G.label.content){
-                 return this.onCarClick(item);
-              }
-            }
-          });
+          AMap.event.removeListener(car.marker,'click',this.handleCarClick);
+          AMap.event.addListener(car.marker,'click',this.handleCarClick);
         }
-
+      },
+      handleCarClick(e){
+        for(let item of this.carList){
+          if(item.licenseNumber === e.target.G.label.content){
+            return this.onCarClick(item);
+          }
+        }
       },
       onCarClick(carInfo){
         this.carInfo = null;
@@ -157,11 +169,13 @@
         axios.get(`api/vehicle/${cardId}`)
         .then(({data}) => {
           let path = [];
-          data && data.data.forEach((item) => {
+
+          data.data && data.data.forEach((item) => {
             path.push([item.lng, item.lat]);
           });
           this.setPath(path);
-        });
+        })
+          .catch(() => message.error('轨迹数据获取失败,请刷新重试~'));
       },
       setPath(path, option = {}){
         let {speed, loop} = option;

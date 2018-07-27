@@ -22,3 +22,8 @@ export function addRole(params) {
 export function delRole(id) {
   return axios.post(`api/role/del/${id}`);
 }
+
+export function getOrder(params) {
+  return axios.get(`api/order/list`, {params});
+}
+
