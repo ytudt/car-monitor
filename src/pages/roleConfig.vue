@@ -46,6 +46,7 @@
         api.config.getRoles()
           .then(({data}) => {
             this.roleList = data && data.data || [];
+            console.log(this.roleList);
           })
           .catch(() =>  message.error('获取用户列表,请刷新重试~'));
       },

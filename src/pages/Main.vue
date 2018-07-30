@@ -8,20 +8,13 @@
             el-dropdown-menu(slot="dropdown")
               el-dropdown-item(v-for="(item, index) in carList" :key="index")
                 .content(@click="onCarClick(item)") {{item.licenseNumber}}
-        li.tab-item.fl
-          el-dropdown
-            span.el-dropdown-link 轨迹回放
-            el-dropdown-menu(slot="dropdown")
-              el-dropdown-item(v-for="(item, index) in carList" :key="index")
-                span.el-dropdown-link(@click="showPath(item.licenseNumber)") {{item.licenseNumber}}
-                el-dropdown()
-                  span.el-dropdown-link
-                  el-dropdown-menu(slot="dropdown")
-                    el-dropdown-item
-                      ul.clr
-                        li.fl 日期
-                        li.fl 车次
-                <!--.content(@click="carNumber=item.licenseNumber") -->
+        li.tab-item.fl.history-tab 轨迹回放
+          ul.car-list
+            li.car-item(v-for="(item, index) in carList" :key="index"
+                        @mouseenter="getTripList(item)")
+              span {{item.licenseNumber}}
+              ul.data-list
+                li.data-item(v-for="(trip, i) in item.tripList" @click="onTripClick(trip)") {{trip.createTime}}
         li.tab-item.fl
           router-link(:to="{ name: 'userConfig'}") 配置台
     CarDetail(v-if="carInfo" :carInfo="carInfo" @close="carInfo=null")
@@ -101,6 +94,7 @@
             .then((res) => {
               car = extend(car, res.data.data);
               car.position = [car.lng, car.lat];
+              car.tripList = [];
               this.carList = carList;
               resolve();
             })
@@ -113,7 +107,6 @@
         for(let i =0 ; i < this.carList.length; i++){
           let car = this.carList[i];
           let isOnline = car.state && car.state.indexOf('ACC熄火') === -1;
-          console.log(car.state);
           car.marker && (map.remove(car.marker));
           //创建SimpleMarker实例
           car.marker = new SimpleMarker({
@@ -161,21 +154,25 @@
           }
         });
       },
-      showPath(cardId){
-       this.getCarTrack(cardId);
+      getTripList(car){
+        let {licenseNumber} = car;
+        api.main.getTripList({licenseNumber})
+          .then(({data}) => {
+            car.tripList = data.data || [];
+          })
+          .catch(() => {})
       },
-      getCarTrack(cardId){
-        this.pathSimplifierIns.show();
-        axios.get(`api/vehicle/${cardId}`)
-        .then(({data}) => {
+      onTripClick(trip){
+        let tripId = trip.id;
+        api.main.getTripPois({tripId})
+          .then(({data}) => {
+          console.log(data);
           let path = [];
-
           data.data && data.data.forEach((item) => {
-            path.push([item.lng, item.lat]);
+            item.lat && item.lng && path.push([item.lng, item.lat]);
           });
-          this.setPath(path);
-        })
-          .catch(() => message.error('轨迹数据获取失败,请刷新重试~'));
+          this.setPath(path, {})
+        });
       },
       setPath(path, option = {}){
         let {speed, loop} = option;
@@ -222,6 +219,49 @@
         }
       }
     }
+    .history-tab{
+      .car-list{
+        display: none;
+        position: absolute;
+        z-index: 10;
+        background: #fff;
+        .car-item{
+          position: relative;
+          line-height: 40px;
+          padding: 0 5px;
+          &:hover{
+            background: #ecf5ff;
+            .data-list{
+              display: block;
+            }
+          }
+          span{
+            color: #666;
+          }
+          .data-list{
+            display: none;
+            width: 200%;
+            background: #fff;
+            position: absolute;
+            top: 0;
+            right: 0;
+            color: #666;
+            transform: translate(100%, 0);
+            .data-item{
+              &:hover{
+                background: #ecf5ff;
+              }
+            }
+          }
+        }
+      }
+      &:hover{
+        .car-list{
+          display: block;
+        }
+      }
+    }
+
     #container{
       height: 100%;
     }
