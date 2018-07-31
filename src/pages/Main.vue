@@ -13,8 +13,10 @@
             li.car-item(v-for="(item, index) in carList" :key="index"
                         @mouseenter="getTripList(item)")
               span {{item.licenseNumber}}
-              ul.data-list
-                li.data-item(v-for="(trip, i) in item.tripList" @click="onTripClick(trip)") {{trip.createTime}}
+              ul.data-list(v-if="item.showDate")
+                li.data-item(v-for="(trip, i) in item.tripList" @click="onTripClick(trip, item)" v-if="item.tripList && item.tripList.length") {{trip.createTime}}
+                li.data-item(v-if="!item.tripList") 加载中...
+                li.data-item(v-if="item.tripList && !item.tripList.length") 无数据...
         li.tab-item.fl
           router-link(:to="{ name: 'userConfig'}") 配置台
     CarDetail(v-if="carInfo" :carInfo="carInfo" @close="carInfo=null")
@@ -67,6 +69,10 @@
         api.main.getVehicles()
         .then(({data}) => {
           let carList = data.data || [];
+          carList.forEach((item) => {
+            item.tripList = null;
+            item.showDate = false;
+          });
           this.refreshCarLocation(carList);
         })
         .catch(() => message.error('车辆数据获取失败,请刷新重试~'));
@@ -94,7 +100,6 @@
             .then((res) => {
               car = extend(car, res.data.data);
               car.position = [car.lng, car.lat];
-              car.tripList = [];
               this.carList = carList;
               resolve();
             })
@@ -155,28 +160,32 @@
         });
       },
       getTripList(car){
-        let {licenseNumber} = car;
+        let {licenseNumber, tripList} = car;
+        this.setShowDate(car);
+        if(tripList) return;
         api.main.getTripList({licenseNumber})
-          .then(({data}) => {
-            car.tripList = data.data || [];
-          })
-          .catch(() => {})
+          .then(({data}) => car.tripList = data.data || [])
+          .catch(() => car.tripList = [])
       },
-      onTripClick(trip){
+      setShowDate(car){
+        this.carList.forEach((item) => item.showDate = false);
+        car.showDate = true;
+      },
+      onTripClick(trip, car){
         let tripId = trip.id;
+        car.showDate = false;
         api.main.getTripPois({tripId})
           .then(({data}) => {
-          console.log(data);
           let path = [];
           data.data && data.data.forEach((item) => {
             item.lat && item.lng && path.push([item.lng, item.lat]);
           });
-          this.setPath(path, {})
+          this.setPath(path, {loop: false})
         });
       },
       setPath(path, option = {}){
         let {speed, loop} = option;
-        loop = loop || true;
+        loop = loop || false;
         speed = speed || 100000;
         this.pathSimplifierIns.setData([{
           name: '车辆轨迹',
@@ -239,7 +248,6 @@
             color: #666;
           }
           .data-list{
-            display: none;
             width: 200%;
             background: #fff;
             position: absolute;

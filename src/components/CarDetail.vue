@@ -102,8 +102,8 @@
         let Y = date.getFullYear();
         let M = date.getMonth() + 1;
         // TODO 这里先写死日期
-        // let D = date.getDate();
-        let D = 8;
+        let D = date.getDate();
+        // let D = 8;
         api.main.getOrderList({
           licenseNumber,
           dispatchDate: `${Y}-${M}-${D}`,
