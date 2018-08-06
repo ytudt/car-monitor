@@ -25,13 +25,13 @@
 </template>
 
 <script>
-  import axios from 'axios';
   import api from 'api';
   import {extend} from 'util';
   import message from 'util/message'
   import {timeMap} from "constant";
   import Header from 'components/Header';
   import CarDetail from 'components/CarDetail';
+
   export default {
     name: 'Main',
     components: {
@@ -41,11 +41,11 @@
     data () {
       return {
         showCarDetail: false,
+        map: null,
         carInfo: null,
         carList: [],
-        map: null,
-        pathSimplifierIns: null,
         refreshTimer: null,
+        pathSimplifierIns: null,
       }
     },
     created(){
@@ -147,7 +147,7 @@
         this.pathSimplifierIns = new PathSimplifier({
           zIndex: 100,
           map: map, //所属的地图实例
-          getPath: function(pathData, pathIndex) {
+          getPath: function(pathData) {
             return pathData.path;
           },
           renderOptions: {
@@ -186,13 +186,9 @@
       setPath(path, option = {}){
         let {speed, loop} = option;
         loop = loop || false;
-        speed = speed || 100000;
-        this.pathSimplifierIns.setData([{
-          name: '车辆轨迹',
-          path,
-        }]);
-        this.pathSimplifierIns.createPathNavigator(0,
-          {loop, speed,}).start();
+        speed = speed || 30000;
+        this.pathSimplifierIns.setData([{name: '车辆轨迹', path}]);
+        this.pathSimplifierIns.createPathNavigator(0, {loop, speed,}).start();
       },
     },
   }
@@ -269,7 +265,6 @@
         }
       }
     }
-
     #container{
       height: 100%;
     }
