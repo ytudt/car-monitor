@@ -4,7 +4,7 @@
       ul.tab-list.clr
         li.tab-item.fl()
           el-dropdown
-            span.el-dropdown-link 目标车辆信息
+            span.el-dropdown-link.first 目标车辆信息
             el-dropdown-menu(slot="dropdown")
               el-dropdown-item(v-for="(item, index) in carList" :key="index")
                 .content(@click="onCarClick(item)") {{item.licenseNumber}}
@@ -18,7 +18,7 @@
                 li.data-item(v-if="!item.tripList") 加载中...
                 li.data-item(v-if="item.tripList && !item.tripList.length") 无数据...
         li.tab-item.fl
-          router-link(:to="{ name: 'userConfig'}") 配置台
+          router-link(:to="{ name: 'userConfig'}" v-if="globalParams.userInfo.roleId==2") 配置台
     CarDetail(v-if="carInfo" :carInfo="carInfo" @close="carInfo=null")
     .map-wrap()
       div(id="container")
@@ -31,12 +31,18 @@
   import {timeMap} from "constant";
   import Header from 'components/Header';
   import CarDetail from 'components/CarDetail';
+  import {mapGetters} from 'vuex';
 
   export default {
     name: 'Main',
     components: {
       Header,
       CarDetail,
+    },
+    computed: {
+      ...mapGetters([
+        'globalParams',
+      ]),
     },
     data () {
       return {
@@ -212,8 +218,10 @@
       color: #fff;
       display: inline-block;
       float: left;
+      .tab-item,.el-dropdown-link.first{
+        font-size: 18px;
+      }
       .tab-item{
-        font-size: 14px;
         float: left;
         height: $header-height;
         line-height: $header-height;
@@ -234,6 +242,7 @@
           position: relative;
           line-height: 40px;
           padding: 0 5px;
+          font-size: 14px;
           &:hover{
             background: #ecf5ff;
             .data-list{

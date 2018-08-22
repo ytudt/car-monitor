@@ -5,15 +5,23 @@ Vue.use(Vuex);
 
 let state = {
   token: '',
+  userInfo: {},
+};
+
+const mutations = {
+  'UPDATE_USERINFO'(state, userInfo) {
+    state.userInfo = userInfo;
+  },
 };
 
 const actions = {
   updateToken({commit}, params = {}) {
     commit('UPDATE_PARAMS', params);
   },
+  updateUserInfo({commit}, params = {}) {
+    commit('UPDATE_USERINFO', params);
+  },
 };
-
-const mutations = {};
 
 const getters = {
   globalParams(state) {
