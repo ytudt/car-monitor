@@ -27,3 +27,7 @@ export const timeMap = {
   videoPlayTime: 5 * 60 * 1000, // 视频播放时长
   carRefreshTime: 1000 * 1000, // 车辆实时位置刷新时间
 };
+
+export const globConfigMap =  {
+  VIDEO_PLAY_TIME: 'videoPlayTime',
+};

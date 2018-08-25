@@ -54,8 +54,16 @@
     mounted(){
       setInterval(this.setTime, 1000);
       this.getUserInfo();
+      this.getGlbalConfig();
     },
     methods:{
+      getGlbalConfig(){
+        api.config.getGlbalConfig()
+          .then(({data}) => {
+            store.dispatch('updateConfig', data.data);
+          })
+          .catch(() => message.error('车辆数据获取失败,请刷新重试~'));
+      },
       getUserInfo(){
         api.core.getUserInfo()
           .then(({data}) => {

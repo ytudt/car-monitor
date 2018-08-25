@@ -34,3 +34,11 @@ export function getSetingList(params) {
 export function setCarSetting(params) {
   return axios.post(`api/vehicle/setting`, params);
 }
+
+export function getGlbalConfig(params) {
+  return axios.get(`/api/setting/list`, {params});
+}
+
+export function setGloblConfig(params) {
+  return axios.post(`/api/setting/save`, params);
+}

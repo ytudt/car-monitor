@@ -38,7 +38,8 @@
 </template>
 
 <script>
-  import {videoInfo, timeMap} from 'constant';
+  import {videoInfo, timeMap, globConfigMap} from 'constant';
+  import {mapGetters} from 'vuex';
 
   let objFlash = bsjflashobj;
    export default {
@@ -58,6 +59,26 @@
       },
     },
     computed:{
+      ...mapGetters([
+        'globalParams',
+      ]),
+      configList(){
+        return this.globalParams.configList;
+      },
+      videoTime: {
+        get(){
+          let result = 0;
+          this.configList.forEach((item) => {
+            if(item.settingCode === globConfigMap.VIDEO_PLAY_TIME){
+              result = parseInt(item.value);
+            }
+          });
+          console.log(result);
+          return result;
+        },
+        set(){},
+
+      },
       carNumber(){
         return this.carInfo.licenseNumber;
       },
@@ -95,7 +116,7 @@
       openVideo(){
         setTimeout(() => {
           this.puaseVideo();
-        }, timeMap.videoPlayTime);
+        }, this.videoTime * 1000);
         const {carIdMap, carNumber} = this;
         let src = this.videoServerUrl;
         let max = this.max;

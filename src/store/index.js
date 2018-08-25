@@ -6,11 +6,15 @@ Vue.use(Vuex);
 let state = {
   token: '',
   userInfo: {},
+  configList: [],
 };
 
 const mutations = {
   'UPDATE_USERINFO'(state, userInfo) {
     state.userInfo = userInfo;
+  },
+  'UPDATE_CONFIG'(state, configList){
+    state.configList = configList;
   },
 };
 
@@ -20,6 +24,9 @@ const actions = {
   },
   updateUserInfo({commit}, params = {}) {
     commit('UPDATE_USERINFO', params);
+  },
+  updateConfig({commit}, configList){
+    commit('UPDATE_CONFIG', configList);
   },
 };
 

@@ -11,23 +11,26 @@
     div.config-item.video-config
       span.text 视频播放时长:
       .select
-        el-input-number(v-model="form.videoTime" label="视频播放时长")
-    div.submit-btn
-      el-button(type="primary") 提交
+        el-input-number(v-model="videoTime" label="视频播放时长")
+      el-button(type="primary" @click="onConfigSet") 提交
 </template>
 
 <script>
+  import {mapGetters} from 'vuex';
+  import _ from 'lodash';
   import api from 'api';
+  import message from 'util/message'
+  import {globConfigMap} from 'constant';
+  import store from 'store';
+
+  console.log(globConfigMap);
+
   export default {
     data () {
       return {
+        videoTime: 0,
         currentCar: null,
         carList: [],
-        form: {
-          videoTime: 5,
-          liveDisItms: [],
-          hisDisItms: [],
-        },
         liveDisItms: [],
         catSettingList: [
           {
@@ -47,18 +50,39 @@
     },
     components: {
     },
+    watch: {
+     configList(){
+       this.getVideoTime();
+     },
+    },
     computed:{
+      ...mapGetters([
+        'globalParams',
+      ]),
+      configList(){
+        return this.globalParams.configList;
+      },
     },
     created(){
       this.getCarList();
+      this.getVideoTime();
     },
     methods:{
+      getVideoTime(){
+        let result = 0;
+        this.configList.forEach((item) => {
+          if(item.settingCode === globConfigMap.VIDEO_PLAY_TIME){
+            result = parseInt(item.value);
+          }
+        });
+        this.videoTime = result;
+      },
       getCarList(){
         api.main.getVehicles()
           .then(({data}) => {
             this.carList = data.data || [];
           })
-          .catch(() => message.error('车辆数据获取失败,请刷新重试~'));
+          .catch(() => message.error('全局数据获取失败,请刷新重试~'));
       },
       onCarChange(licenseNumber){
         this.liveDisItms = [];
@@ -68,7 +92,6 @@
               set.value && this.liveDisItms.push(set.settingName);
             })
           }
-          console.log(this.liveDisItms);
         });
       },
       onCarSet(){
@@ -82,7 +105,7 @@
           params.settingModels.push({
             settingCode,
             settingName,
-            value: this.liveDisItms.indexOf(item.settingName) === -1 ? false : true,
+            value: this.liveDisItms.indexOf(item.settingName) === -1 ? '' : true,
           });
         });
         api.config.setCarSetting(params)
@@ -93,6 +116,30 @@
               center: true
             });
             this.getCarList();
+          });
+      },
+      onConfigSet(){
+        let configList = _.cloneDeep(this.configList);
+        let flag = false;
+        configList.forEach((item) => {
+          if(item.settingCode === globConfigMap.VIDEO_PLAY_TIME) {
+            item.value = this.videoTime;
+            flag = true;
+          }
+        });
+        !flag && configList.push({
+          "settingCode": globConfigMap.VIDEO_PLAY_TIME,
+          "settingName": "视频播放时长",
+          "value": this.videoTime,
+        });
+        api.config.setGloblConfig(configList)
+          .then(({data}) => {
+            store.dispatch('updateConfig', data.data);
+            this.$message({
+              message: '配置成功',
+              type: 'success',
+              center: true
+            });
           });
       },
     },

@@ -50,6 +50,7 @@
   import Draggable from 'vuedraggable'
   import Flashvideo from './Flashvideo'
   import api from 'api'
+
   export default {
     name: 'CarDetail',
     props: {
@@ -85,7 +86,6 @@
     },
     mounted(){
       this.ehicleSettingModelList = this.carInfo.vehicleSettingModelList;
-      console.log(this.carInfo.vehicleSettingModelList, '123');
 
     },
     methods:{
