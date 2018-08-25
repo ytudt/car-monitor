@@ -2,18 +2,12 @@
   div.car-config-wrap
     div.config-item
       span.text 实时车辆显示内容:
+      el-select(v-model="currentCar" placeholder="车辆" @change="onCarChange(currentCar)")
+        el-option(v-for="item in carList" :key="item.licenseNumber" :label="item.licenseNumber" :value="item.licenseNumber")
       .select
-        el-checkbox-group(v-model="form.liveDisItms")
-          el-checkbox(label="复选框 A")
-          el-checkbox(label="复选框 B")
-          el-checkbox(label="复选框 C")
-    div.config-item
-      span.text 轨迹回放显示内容:
-      .select
-        el-checkbox-group(v-model="form.hisDisItms")
-          el-checkbox(label="复选框 A")
-          el-checkbox(label="复选框 B")
-          el-checkbox(label="复选框 C")
+        el-checkbox-group(v-model="liveDisItms")
+          el-checkbox(:label="item.settingName" :value="item.settingCode" v-for="(item, index) in catSettingList" :key="index")
+      el-button(type="primary" @click="onCarSet()") 提交
     div.config-item.video-config
       span.text 视频播放时长:
       .select
@@ -23,14 +17,32 @@
 </template>
 
 <script>
+  import api from 'api';
   export default {
     data () {
       return {
+        currentCar: null,
+        carList: [],
         form: {
           videoTime: 5,
           liveDisItms: [],
           hisDisItms: [],
         },
+        liveDisItms: [],
+        catSettingList: [
+          {
+            settingCode: 'SHOWVEDIO',
+            settingName: '是否显示视频',
+          },
+          {
+            settingCode: 'SHOWGOODS',
+            settingName: '是否显示货物',
+          },
+          {
+            settingCode: 'SHOWTEM',
+            settingName: '是否显示温度',
+          },
+        ]
       }
     },
     components: {
@@ -38,8 +50,51 @@
     computed:{
     },
     created(){
+      this.getCarList();
     },
     methods:{
+      getCarList(){
+        api.main.getVehicles()
+          .then(({data}) => {
+            this.carList = data.data || [];
+          })
+          .catch(() => message.error('车辆数据获取失败,请刷新重试~'));
+      },
+      onCarChange(licenseNumber){
+        this.liveDisItms = [];
+        this.carList.forEach((item) => {
+          if(item.licenseNumber === licenseNumber){
+            item.vehicleSettingModelList.forEach((set) => {
+              set.value && this.liveDisItms.push(set.settingName);
+            })
+          }
+          console.log(this.liveDisItms);
+        });
+      },
+      onCarSet(){
+        if(!this.currentCar) return;
+        let params = {
+          licenseNumber: this.currentCar,
+          settingModels: [],
+        };
+        this.catSettingList.forEach((item) => {
+          const {settingCode, settingName} = item;
+          params.settingModels.push({
+            settingCode,
+            settingName,
+            value: this.liveDisItms.indexOf(item.settingName) === -1 ? false : true,
+          });
+        });
+        api.config.setCarSetting(params)
+          .then(({data}) => {
+            this.$message({
+              message: '配置成功',
+              type: 'success',
+              center: true
+            });
+            this.getCarList();
+          });
+      },
     },
   }
 </script>
@@ -59,6 +114,7 @@
       }
       .select{
         display: inline-block;
+        margin: 0 10px;
       }
     }
     .submit-btn{

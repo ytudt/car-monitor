@@ -13,9 +13,9 @@
       el-table-column(label="押运员")
         template(slot-scope="scope")
           span {{scope.row.escort}}
-    .video-wrap
+    .video-wrap(v-if="disPlayItemMap.SHOWVEDIO")
       Flashvideo(:carInfo="carInfo")
-    el-table(:data="orderList" align="center")
+    el-table(:data="orderList" align="center" v-if="disPlayItemMap.SHOWGOODS")
       el-table-column(label="门店")
         template(slot-scope="scope")
           span {{scope.row.customerName}}
@@ -42,7 +42,7 @@
           <!--div(@click="onDetailClick()")-->
             <!--span 明细-->
             <!--i.el-icon-caret-bottom-->
-    div 车厢温度: {{carInfo.temp}}
+    div(v-if="disPlayItemMap.SHOWTEM") 车厢温度: {{carInfo.temp}}
 
 </template>
 
@@ -67,31 +67,25 @@
         this.getOrderList(licenseNumber);
         return licenseNumber;
       },
+
+      disPlayItemMap() {
+        let result = {}
+        this.ehicleSettingModelList && this.ehicleSettingModelList.forEach((item) => {
+          result[item.settingCode] = item.value;
+        });
+        return result;
+      },
     },
     data () {
       return {
+        ehicleSettingModelList: [],
         carBasic: [1],
         orderList: [],
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
       }
     },
     mounted(){
+      this.ehicleSettingModelList = this.carInfo.vehicleSettingModelList;
+      console.log(this.carInfo.vehicleSettingModelList, '123');
 
     },
     methods:{
@@ -101,9 +95,7 @@
         let date = new Date();
         let Y = date.getFullYear();
         let M = date.getMonth() + 1;
-        // TODO 这里先写死日期
         let D = date.getDate();
-        // let D = 8;
         api.main.getOrderList({
           licenseNumber,
           dispatchDate: `${Y}-${M}-${D}`,
@@ -122,9 +114,9 @@
 <style lang="scss">
 .car-detail-wrap{
    position: fixed;
-    top: 0;
-   right: 20px;
-  width: 600px;
+    top: 20px;
+   right: 50px;
+  width: 500px;
    background: red;
    z-index: 1;
    background: #f4f4f4;

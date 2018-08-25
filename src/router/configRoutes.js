@@ -23,14 +23,14 @@ const configRoutes = [
       title: '车辆配置',
     },
   },
-  {
-    path: 'order',
-    name: 'orderConfig',
-    component: (r) => require.ensure([], () => r(require('src/pages/orderConfig')), 'orderConfig'),
-    meta: {
-      title: '订单管理',
-    },
-  },
+  // {
+  //   path: 'order',
+  //   name: 'orderConfig',
+  //   component: (r) => require.ensure([], () => r(require('src/pages/orderConfig')), 'orderConfig'),
+  //   meta: {
+  //     title: '订单管理',
+  //   },
+  // },
 ];
 
 export default configRoutes;

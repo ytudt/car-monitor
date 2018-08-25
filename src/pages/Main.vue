@@ -8,15 +8,26 @@
             el-dropdown-menu(slot="dropdown")
               el-dropdown-item(v-for="(item, index) in carList" :key="index")
                 .content(@click="onCarClick(item)") {{item.licenseNumber}}
-        li.tab-item.fl.history-tab 轨迹回放
-          ul.car-list
+        li.tab-item.fl.history-tab(@mouseenter="dialogFormVisible=true") 轨迹回放
+          el-dialog(title="轨迹回放" :visible.sync="dialogFormVisible" width="70%" v-if="dialogFormVisible" )
+            .speed-wrap
+              el-radio(v-model="speedFlag" label="true") 二倍速
+            ul.car-list
+              .title 车辆列表
+              li.car-item(v-for="(item, index) in carList" :key="index" @click="onHisCarClick(item)" v-bind:class="{active: currentHisCar===item}") {{item.licenseNumber}}
+            .data-piker
+              .title 车次时间
+              el-date-picker(v-model="hisDate"
+                            type="date"
+                            @change="getTripList"
+                            placeholder="选择时间")
+            ul.out-list
+              .title 车次列表
+              li.out-item(v-for="(item, index) in hisOutList" :key="index" @click="onTripClick(item)") {{item.createTime}}
+              div(v-if="!hisOutList.length") 无车次...
+          ul.car-list(v-if="false")
             li.car-item(v-for="(item, index) in carList" :key="index"
                         @mouseenter="getTripList(item)")
-              span {{item.licenseNumber}}
-              ul.data-list(v-if="item.showDate")
-                li.data-item(v-for="(trip, i) in item.tripList" @click="onTripClick(trip, item)" v-if="item.tripList && item.tripList.length") {{trip.createTime}}
-                li.data-item(v-if="!item.tripList") 加载中...
-                li.data-item(v-if="item.tripList && !item.tripList.length") 无数据...
         li.tab-item.fl
           router-link(:to="{ name: 'userConfig'}" v-if="globalParams.userInfo.roleId==2") 配置台
     CarDetail(v-if="carInfo" :carInfo="carInfo" @close="carInfo=null")
@@ -26,7 +37,7 @@
 
 <script>
   import api from 'api';
-  import {extend} from 'util';
+  import {extend, getYMD} from 'util';
   import message from 'util/message'
   import {timeMap} from "constant";
   import Header from 'components/Header';
@@ -46,6 +57,11 @@
     },
     data () {
       return {
+        speedFlag: '',
+        dialogFormVisible: false,
+        hisDate: '',
+        currentHisCar: null,
+        hisOutList: [],
         showCarDetail: false,
         map: null,
         carInfo: null,
@@ -75,10 +91,6 @@
         api.main.getVehicles()
         .then(({data}) => {
           let carList = data.data || [];
-          carList.forEach((item) => {
-            item.tripList = null;
-            item.showDate = false;
-          });
           this.refreshCarLocation(carList);
         })
         .catch(() => message.error('车辆数据获取失败,请刷新重试~'));
@@ -103,8 +115,8 @@
             api.main.getLocation({
               licenseNumber: car.licenseNumber,
             })
-            .then((res) => {
-              car = extend(car, res.data.data);
+            .then(({data}) => {
+              car = extend(car, data.data);
               car.position = [car.lng, car.lat];
               this.carList = carList;
               resolve();
@@ -117,7 +129,7 @@
       setMarker(map, SimpleMarker){
         for(let i =0 ; i < this.carList.length; i++){
           let car = this.carList[i];
-          let isOnline = car.state && car.state.indexOf('ACC熄火') === -1;
+          let isOnline = car.state && (car.state.indexOf('ACC熄火') === -1 && car.state.indexOf('停车') === -1);
           car.marker && (map.remove(car.marker));
           //创建SimpleMarker实例
           car.marker = new SimpleMarker({
@@ -167,19 +179,15 @@
       },
       getTripList(car){
         let {licenseNumber, tripList} = car;
-        this.setShowDate(car);
         if(tripList) return;
         api.main.getTripList({licenseNumber})
           .then(({data}) => car.tripList = data.data || [])
           .catch(() => car.tripList = [])
       },
-      setShowDate(car){
-        this.carList.forEach((item) => item.showDate = false);
-        car.showDate = true;
-      },
-      onTripClick(trip, car){
+      onTripClick(trip){
+        console.log(trip);
+        this.dialogFormVisible = false;
         let tripId = trip.id;
-        car.showDate = false;
         api.main.getTripPois({tripId})
           .then(({data}) => {
           let path = [];
@@ -192,9 +200,23 @@
       setPath(path, option = {}){
         let {speed, loop} = option;
         loop = loop || false;
-        speed = speed || 30000;
+        speed = this.speedFlag ? 60000 : 30000;
         this.pathSimplifierIns.setData([{name: '车辆轨迹', path}]);
         this.pathSimplifierIns.createPathNavigator(0, {loop, speed,}).start();
+      },
+      onHisCarClick(car){
+        this.currentHisCar = car;
+        this.getTripList();
+      },
+      getTripList(){
+        if(!this.currentHisCar || !this.hisDate) return;
+        const {licenseNumber} = this.currentHisCar;
+        let date = getYMD(this.hisDate);
+        api.main.getTripList({licenseNumber, date})
+          .then(({data}) => {
+            this.hisOutList = data.data;
+          })
+          .catch(() => this.hisOutList = [])
       },
     },
   }
@@ -233,44 +255,44 @@
       }
     }
     .history-tab{
-      .car-list{
-        display: none;
-        position: absolute;
-        z-index: 10;
-        background: #fff;
-        .car-item{
-          position: relative;
-          line-height: 40px;
-          padding: 0 5px;
-          font-size: 14px;
-          &:hover{
-            background: #ecf5ff;
-            .data-list{
-              display: block;
-            }
-          }
-          span{
-            color: #666;
-          }
-          .data-list{
-            width: 200%;
-            background: #fff;
-            position: absolute;
-            top: 0;
-            right: 0;
-            color: #666;
-            transform: translate(100%, 0);
-            .data-item{
-              &:hover{
-                background: #ecf5ff;
-              }
-            }
-          }
+      .speed-wrap{
+        text-align: left;
+        padding-left: 100px;
+        border-bottom: 1px solid #ddd;
+      }
+      .el-dialog__body{
+        padding: 0;
+      }
+      .el-dialog__header{
+        padding-bottom: 0;
+      }
+      .car-list,.data-piker,.out-list{
+        padding-top: 10px;
+        display: inline-block;
+        width: 33.3%;
+        vertical-align: top;
+        .title{
+          font-size: 18px;
+          line-height: 22px;
         }
       }
-      &:hover{
-        .car-list{
-          display: block;
+      .car-list,.data-piker{
+        border-right: 1px solid #ddd;
+        height: 400px;
+      }
+      .car-list{
+        background: #fff;
+      }
+      .car-item,.out-item{
+        position: relative;
+        padding: 0 5px;
+        font-size: 14px;
+        line-height: 30px;
+        &:hover,&.active{
+          background: #ecf5ff;
+        }
+        span{
+          color: #666;
         }
       }
     }

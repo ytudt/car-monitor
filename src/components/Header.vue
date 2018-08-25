@@ -2,7 +2,7 @@
   .header-wrap
     .company-ingo
       .logo
-      span.name 北京*****公司
+      span.name ***监控平台
     slot
     .user-Name(@mouseenter="showSetWrap=true" @mouseleave="showSetWrap=false") 欢迎 {{userName}}
       span.pull-down-wrap
@@ -74,7 +74,8 @@
         minutes = date.getMinutes(),
         seconds = date.getSeconds();
         vWeek_s = date.getDay();
-        this.currentTime = year + "年" + month + "月" + day + "日" + "\t" + hours + ":" + minutes +":" + seconds ;
+        // this.currentTime = year + "年" + month + "月" + day + "日" + "\t" + hours + ":" + minutes +":" + seconds ;
+        this.currentTime = year + "年" + month + "月" + day + "日";
       },
       logOut(){
         Cookies.remove('token');
@@ -132,6 +133,7 @@
         background-repeat: no-repeat;
         display: inline-block;
         float: left;
+        transform: scale(0.8);
       }
       .name,.img,.version{
         float: left;

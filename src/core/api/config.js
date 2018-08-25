@@ -27,3 +27,10 @@ export function getOrder(params) {
   return axios.get(`api/order/list`, {params});
 }
 
+export function getSetingList(params) {
+  return axios.get(`/api/setting/list`, {params});
+}
+
+export function setCarSetting(params) {
+  return axios.post(`api/vehicle/setting`, params);
+}

@@ -1,16 +1,17 @@
 <template lang="pug">
 .login-wrap(id="target")
   //Header
-  .form-wrap
-    div.login-text 用户登录
-    el-form
-      el-form-item
-        el-input(v-model="userName" placeholder="用户名")
-      el-form-item
-        el-input(:type="passwordType" v-model="password" placeholder="密码")
-        span.show-password(@click="showPassword=!showPassword") {{showPassword ? 'HIDE' : 'SHOW'}}
-    .btn-wrap
-      button.btn(@click="login()") 登录
+  el-card.box-card
+      div.clearfix(slot="header")
+        span 用户登录
+      el-form(ref="form" :rules="rules" :model="form" label-width="100px")
+          el-form-item(prop="userName" label="用户名：")
+              el-input(v-model="form.userName" placeholder="请输入用户名")
+          el-form-item(prop="password" label="密码：")
+              el-input(type="passwordType" v-model="form.password" placeholder="请输入密码")
+          el-form-item(align="left")
+              el-button(type="primary" :loading="loading" @click="login") 立即登录
+              el-button( @click="resetForm") 重置
 </template>
 
 <script>
@@ -28,9 +29,19 @@
     },
     data () {
       return {
-        showPassword: false,
-        userName: '',
-        password: ''
+        form: {
+          userName: '',
+          password: ''
+        },
+        loading: false,
+        rules: {
+          userName: [
+            { required: true, message: '请输入用户名', trigger: 'blur' }
+          ],
+          password: [
+            { required: true, message: '请输入密码', trigger: 'blur' }
+          ]
+        },
       }
     },
     computed:{
@@ -45,34 +56,39 @@
     },
     methods:{
       login(){
-        if(this.btnDisable){
-          return this.$message({
-            message: '用户名或密码不能为空~',
-            type: 'warning',
-            center: true
-          });
-        }
-        this.showPassword = false;
-        api.login.doLogin({
-          userName: this.userName,
-          password: MD5(this.password),
-        })
-        .then(({data}) => {
-          if(!data || !data.success) return Promise.reject(data.message);
-          Cookies.set('token', data.data, { expires: timeMap.tokenValidTime * 1 / 24 });
-          this.$router.push({
-            name: 'Main',
-          });
-        })
-        .catch((err) => {
-          let errMsg = err && isString(err) ? err : '登录失败,请检查网络重新尝试~';
-          this.$message({
-            message: errMsg,
-            type: 'error',
-            center: true
-          });
+        this.$refs['form'].validate((valid) => {
+          if (valid) {
+            this.loading = true;
+            this.showPassword = false;
+            api.login.doLogin({
+              userName: this.form.userName,
+              password: MD5(this.form.password),
+            })
+            .then(({data}) => {
+               this.loading = false;
+               if(!data || !data.success) return Promise.reject(data.message);
+               Cookies.set('token', data.data, { expires: timeMap.tokenValidTime * 1 / 24 });
+               this.$router.push({
+                 name: 'Main',
+               });
+            })
+            .catch((err) => {
+               this.loading = false;
+               let errMsg = err && isString(err) ? err : '登录失败,请检查网络重新尝试~';
+               this.$message({
+                 message: errMsg,
+                 type: 'error',
+                 center: true
+               });
+            });
+          } else {
+            return false;
+          }
         });
       },
+      resetForm() {
+         this.$refs['form'].resetFields();
+      }
     },
   }
 </script>
@@ -83,43 +99,11 @@
     background: url("~assets/login-bg.jpeg");
     background-repeat: no-repeat;
     background-size: cover;
-    padding-top: 200px;
-    box-sizing: border-box;
-    .form-wrap{
-      width: 400px;
-      background: #fff;
-      margin: 0px auto;
-      padding: 20px;
-      border-radius: 10px;
-      .login-text{
-        color: #333;
-        font-size: 20px;
-        text-align: center;
-        margin-bottom: 20px;
-      }
-      .show-password{
-        position: absolute;
-        right: 10px;
-        color: #666;
-        cursor: pointer;
-      }
-      .err-mes{
-        color: red;
-        font-size: 16px;
-        text-align: center;
-      }
-      .btn-wrap{
-        text-align: center;
-        margin-top: 10px;
-        .btn{
-          border-radius: 5px;
-          color: #fff;
-          width: 100%;
-          height: 40px;
-          background: $base-color;
-          outline: none;
-        }
-      }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .box-card{
+      width: 500px;
     }
   }
 </style>

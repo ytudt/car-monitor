@@ -25,5 +25,5 @@ export const videoInfo = {
 export const timeMap = {
   tokenValidTime: 600, // token有效时间 单位小时
   videoPlayTime: 5 * 60 * 1000, // 视频播放时长
-  carRefreshTime: 5 * 1000, // 车辆实时位置刷新时间
+  carRefreshTime: 1000 * 1000, // 车辆实时位置刷新时间
 };
