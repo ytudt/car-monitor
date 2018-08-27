@@ -35,8 +35,6 @@
 
       }
     },
-    computed:{
-    },
     created(){
       this.getRoleList();
       this.initForm();

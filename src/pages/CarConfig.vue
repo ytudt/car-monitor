@@ -2,12 +2,12 @@
   div.car-config-wrap
     div.config-item
       span.text 实时车辆显示内容:
-      el-select(v-model="currentCar" placeholder="车辆" @change="onCarChange(currentCar)")
+      el-select(v-model="currentCar" placeholder="选择车辆..." @change="onCarChange(currentCar)")
         el-option(v-for="item in carList" :key="item.licenseNumber" :label="item.licenseNumber" :value="item.licenseNumber")
       .select
         el-checkbox-group(v-model="liveDisItms")
           el-checkbox(:label="item.settingName" :value="item.settingCode" v-for="(item, index) in catSettingList" :key="index")
-      el-button(type="primary" @click="onCarSet()") 提交
+      el-button(type="primary" @click="onCarSet()" :disabled="!currentCar") 提交
     div.config-item.video-config
       span.text 视频播放时长:
       .select
@@ -61,6 +61,9 @@
       ]),
       configList(){
         return this.globalParams.configList;
+      },
+      configMap(){
+        return this.globalParams.configMap;
       },
     },
     created(){
@@ -119,22 +122,11 @@
           });
       },
       onConfigSet(){
-        let configList = _.cloneDeep(this.configList);
-        let flag = false;
-        configList.forEach((item) => {
-          if(item.settingCode === globConfigMap.VIDEO_PLAY_TIME) {
-            item.value = this.videoTime;
-            flag = true;
-          }
-        });
-        !flag && configList.push({
-          "settingCode": globConfigMap.VIDEO_PLAY_TIME,
-          "settingName": "视频播放时长",
-          "value": this.videoTime,
-        });
-        api.config.setGloblConfig(configList)
-          .then(({data}) => {
-            store.dispatch('updateConfig', data.data);
+        let config = _.cloneDeep(this.configMap.videoPlayTime);
+        config.value = this.videoTime;
+        store.dispatch('updateConfigMap', {key: 'videoPlayTime', config});
+        api.config.setGloblConfig(this.configList)
+          .then(() => {
             this.$message({
               message: '配置成功',
               type: 'success',
@@ -148,22 +140,6 @@
 <style lang="scss">
   .car-config-wrap{
     background: #fff;
-    .config-item{
-      border-bottom: 1px solid $border-color-gray;
-      padding: 20px 0;
-      text-align: left;
-      padding-left: 50px;
-      .text{
-        display: inline-block;
-        margin-right: 10px;
-        font-size: 14px;
-        color: #606266;
-      }
-      .select{
-        display: inline-block;
-        margin: 0 10px;
-      }
-    }
     .submit-btn{
       margin-top: 10px;
     }

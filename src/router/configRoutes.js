@@ -1,3 +1,4 @@
+import {menuMap} from 'constant';
 const configRoutes = [
   {
     path: 'user',
@@ -5,6 +6,7 @@ const configRoutes = [
     component: (r) => require.ensure([], () => r(require('src/pages/userConfig')), 'userConfig'),
     meta: {
       title: '用户配置',
+      authId: menuMap.config,
     },
   },
   {
@@ -13,6 +15,16 @@ const configRoutes = [
     component: (r) => require.ensure([], () => r(require('src/pages/roleConfig')), 'roleConfig'),
     meta: {
       title: '角色配置',
+      authId: menuMap.config,
+    },
+  },
+  {
+    path: 'auth',
+    name: 'authConfig',
+    component: (r) => require.ensure([], () => r(require('src/pages/authConfig')), 'authConfig'),
+    meta: {
+      title: '权限配置',
+      authId: menuMap.config,
     },
   },
   {
@@ -21,6 +33,7 @@ const configRoutes = [
     component: (r) => require.ensure([], () => r(require('src/pages/CarConfig')), 'carConfig'),
     meta: {
       title: '车辆配置',
+      authId: menuMap.config,
     },
   },
   // {

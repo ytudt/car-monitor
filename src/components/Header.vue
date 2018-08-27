@@ -60,9 +60,9 @@
       getGlbalConfig(){
         api.config.getGlbalConfig()
           .then(({data}) => {
-            store.dispatch('updateConfig', data.data);
+            store.dispatch('updateConfigList', data.data);
           })
-          .catch(() => message.error('车辆数据获取失败,请刷新重试~'));
+          .catch(() => message.error('全局配置获取失败,请刷新重试~'));
       },
       getUserInfo(){
         api.core.getUserInfo()

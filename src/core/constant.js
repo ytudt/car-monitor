@@ -31,3 +31,8 @@ export const timeMap = {
 export const globConfigMap =  {
   VIDEO_PLAY_TIME: 'videoPlayTime',
 };
+
+export const menuMap = {
+  main: 1,
+  config: 2,
+};

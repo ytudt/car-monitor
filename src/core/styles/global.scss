@@ -2,3 +2,23 @@
 @import 'mixin';
 @import 'util';
 
+.car-config-wrap,.auth-config-wrap{
+  .config-item{
+    border-bottom: 1px solid #eee;
+    padding: 20px 0;
+    text-align: left;
+    padding-left: 50px;
+    .text{
+      display: inline-block;
+      margin-right: 10px;
+      font-size: 14px;
+      color: #606266;
+    }
+    .select{
+      display: inline-block;
+      margin: 0 10px;
+    }
+  }
+
+}
+

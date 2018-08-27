@@ -5,17 +5,33 @@ Vue.use(Vuex);
 
 let state = {
   token: '',
+  menuList: null,
   userInfo: {},
   configList: [],
+  configMap: {},
 };
 
 const mutations = {
   'UPDATE_USERINFO'(state, userInfo) {
     state.userInfo = userInfo;
   },
-  'UPDATE_CONFIG'(state, configList){
+  'UPDATE_CONFIG_LIST'(state, configList){
     state.configList = configList;
+    configList.forEach((item) => {
+      state.configMap[item.settingCode] = item;
+    });
   },
+  'UPDATE_CONFIG_MAP'(state, params){
+    const {key, config} = params;
+    state.configMap[key] = config;
+    state.configList = [];
+    for(let key in state.configMap){
+      state.configList.push(config);
+    }
+  },
+  'UPDATE_MENU_LIST'(state, menuList){
+    state.menuList = menuList;
+  }
 };
 
 const actions = {
@@ -25,8 +41,14 @@ const actions = {
   updateUserInfo({commit}, params = {}) {
     commit('UPDATE_USERINFO', params);
   },
-  updateConfig({commit}, configList){
-    commit('UPDATE_CONFIG', configList);
+  updateConfigList({commit}, configList){
+    commit('UPDATE_CONFIG_LIST', configList);
+  },
+  updateConfigMap({commit}, params = {}){
+    commit('UPDATE_CONFIG_MAP', params);
+  },
+  updateMenulist({commit}, menuList = []){
+    commit('UPDATE_MENU_LIST', menuList);
   },
 };
 

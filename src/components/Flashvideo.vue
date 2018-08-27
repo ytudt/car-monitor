@@ -62,21 +62,11 @@
       ...mapGetters([
         'globalParams',
       ]),
-      configList(){
-        return this.globalParams.configList;
+      configMap(){
+        return this.globalParams.configMap;
       },
-      videoTime: {
-        get(){
-          let result = 0;
-          this.configList.forEach((item) => {
-            if(item.settingCode === globConfigMap.VIDEO_PLAY_TIME){
-              result = parseInt(item.value);
-            }
-          });
-          console.log(result);
-          return result;
-        },
-        set(){},
+      videoTime(){
+        return parseInt(this.configMap.videoPlayTime.value);
 
       },
       carNumber(){

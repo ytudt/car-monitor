@@ -42,3 +42,7 @@ export function getGlbalConfig(params) {
 export function setGloblConfig(params) {
   return axios.post(`/api/setting/save`, params);
 }
+
+export function setMenus(params) {
+  return axios.post(`/api/role/setmenu`, params);
+}

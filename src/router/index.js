@@ -2,7 +2,9 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Cookies from 'js-cookie';
 import configRoutes from './configRoutes';
-
+import {menuMap} from 'constant';
+import store from '../store';
+import api from 'api';
 
 Vue.use(Router);
 
@@ -19,6 +21,7 @@ const router = new Router({
       component: (r) => require.ensure([], () => r(require('src/pages/Main')), 'main'),
       meta:{
         KeepAlive: false,
+        title: '首页',
       },
     },
     {
@@ -26,11 +29,22 @@ const router = new Router({
       name: 'Config',
       component: (r) => require.ensure([], () => r(require('src/pages/Config')), 'Config'),
       children: configRoutes,
+      meta:{
+        title: '配置台',
+        authId: menuMap.config,
+      },
     },
   ],
 });
 
 router.beforeEach((to, from, next) => {
+  if(to.name !== 'Login'){
+    api.core.getMenuList()
+      .then(({data}) => {
+        console.log(data);
+      });
+  }
+
   const token = Cookies.get('token');
   if(token && to.name === 'Login') {
     return next({
@@ -43,7 +57,6 @@ router.beforeEach((to, from, next) => {
   }else {
     next();
   }
-  // next();
 });
 
 router.afterEach((to) => {
