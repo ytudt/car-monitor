@@ -8,7 +8,8 @@
             el-dropdown-menu(slot="dropdown")
               el-dropdown-item(v-for="(item, index) in carList" :key="index")
                 .content(@click="onCarClick(item)") {{item.licenseNumber}}
-        li.tab-item.fl.history-tab(@mouseenter="dialogFormVisible=true") 轨迹回放
+        li.tab-item.fl.history-tab
+          span(@mouseenter="dialogFormVisible=true") 轨迹回放
           el-dialog(title="轨迹回放" :visible.sync="dialogFormVisible" width="70%" v-if="dialogFormVisible" )
             .speed-wrap
               el-radio(v-model="speedFlag" label="true") 二倍速
