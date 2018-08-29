@@ -57,7 +57,7 @@ router.beforeEach((to, from, next) => {
   console.log(to.name);
   if(to.name === 'Login') return next();
   if(store.state.menuList){
-    if(store.state.menuList.indexOf(authId) === -1) return next({name: 'Main'});
+    if(authId && store.state.menuList.indexOf(authId) === -1) return next({name: 'Main'});
     next();
   }else{
     api.core.getMenuList()
@@ -68,8 +68,5 @@ router.beforeEach((to, from, next) => {
       });
   }
 });
-// router.afterEach((to) => {
-// });
-
 
 export default router;
