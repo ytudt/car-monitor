@@ -90,6 +90,7 @@
         this.$router.push({
           name: 'Login',
         });
+        store.dispatch('initState');
       },
       modifyPassword(){
         this.dialogFormVisible = true;

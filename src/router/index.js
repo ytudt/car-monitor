@@ -38,13 +38,6 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-  if(to.name !== 'Login'){
-    api.core.getMenuList()
-      .then(({data}) => {
-        console.log(data);
-      });
-  }
-
   const token = Cookies.get('token');
   if(token && to.name === 'Login') {
     return next({
@@ -59,8 +52,24 @@ router.beforeEach((to, from, next) => {
   }
 });
 
-router.afterEach((to) => {
+router.beforeEach((to, from, next) => {
+  let authId = to.meta.authId;
+  console.log(to.name);
+  if(to.name === 'Login') return next();
+  if(store.state.menuList){
+    if(store.state.menuList.indexOf(authId) === -1) return next({name: 'Main'});
+    next();
+  }else{
+    api.core.getMenuList()
+      .then(({data}) => {
+        store.dispatch('updateMenulist', data.data || [])
+        if(authId && store.state.menuList.indexOf(authId) === -1) return next({name: 'Main'});
+        next();
+      });
+  }
 });
+// router.afterEach((to) => {
+// });
 
 
 export default router;

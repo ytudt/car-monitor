@@ -29,7 +29,7 @@
             li.car-item(v-for="(item, index) in carList" :key="index"
                         @mouseenter="getTripList(item)")
         li.tab-item.fl
-          router-link(:to="{ name: 'userConfig'}" v-if="globalParams.userInfo.roleId==2") 配置台
+          router-link(:to="{ name: 'userConfig'}" v-if="showConfig") 配置台
     CarDetail(v-if="carInfo" :carInfo="carInfo" @close="carInfo=null")
     .map-wrap()
       div(id="container")
@@ -39,7 +39,7 @@
   import api from 'api';
   import {extend, getYMD} from 'util';
   import message from 'util/message'
-  import {timeMap} from "constant";
+  import {timeMap, menuMap} from "constant";
   import Header from 'components/Header';
   import CarDetail from 'components/CarDetail';
   import {mapGetters} from 'vuex';
@@ -54,6 +54,9 @@
       ...mapGetters([
         'globalParams',
       ]),
+      showConfig(){
+        return this.globalParams.menuList && this.globalParams.menuList.indexOf(menuMap.config) !== -1;
+      },
     },
     data () {
       return {

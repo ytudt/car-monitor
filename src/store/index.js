@@ -3,13 +3,16 @@ import Vuex from 'vuex';
 
 Vue.use(Vuex);
 
-let state = {
-  token: '',
-  menuList: null,
-  userInfo: {},
-  configList: [],
-  configMap: {},
-};
+let state = {};
+
+function initState(state) {
+  state.token = '';
+  state.menuList = null;
+  state.userInfo = {};
+  state.configList = [];
+  state.configMap = {};
+}
+initState(state);
 
 const mutations = {
   'UPDATE_USERINFO'(state, userInfo) {
@@ -30,8 +33,14 @@ const mutations = {
     }
   },
   'UPDATE_MENU_LIST'(state, menuList){
-    state.menuList = menuList;
-  }
+    state.menuList = [];
+    menuList.forEach((menu) => {
+      state.menuList.push(menu.id);
+    });
+  },
+  'INIT_STATE'(state){
+    initState(state);
+  },
 };
 
 const actions = {
@@ -49,6 +58,9 @@ const actions = {
   },
   updateMenulist({commit}, menuList = []){
     commit('UPDATE_MENU_LIST', menuList);
+  },
+  initState({commit}){
+    commit('INIT_STATE');
   },
 };
 
