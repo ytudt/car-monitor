@@ -8,7 +8,7 @@
           el-form-item(prop="userName" label="用户名：")
               el-input(v-model="form.userName" placeholder="请输入用户名")
           el-form-item(prop="password" label="密码：")
-              el-input(type="passwordType" v-model="form.password" placeholder="请输入密码")
+              el-input(type="password" v-model="form.password" placeholder="请输入密码")
           el-form-item(align="left")
               el-button(type="primary" :loading="loading" @click="login") 立即登录
               el-button( @click="resetForm") 重置
