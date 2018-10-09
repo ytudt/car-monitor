@@ -8,9 +8,9 @@
           el-form-item(prop="userName" label="用户名：")
               el-input(v-model="form.userName" placeholder="请输入用户名")
           el-form-item(prop="password" label="密码：")
-              el-input(type="password" v-model="form.password" placeholder="请输入密码")
+              el-input(type="password" v-model="form.password" placeholder="请输入密码" @keyup.enter="login")
           el-form-item(align="left")
-              el-button(type="primary" :loading="loading" @click="login") 立即登录
+              el-button(:disabled="btnDisable" type="primary" :loading="loading" @click="login") 立即登录
               el-button( @click="resetForm") 重置
 </template>
 
@@ -49,12 +49,21 @@
         return this.showPassword ? '' : 'password';
       },
       btnDisable(){
-        const {userName, password} = this;
+        const {userName, password} = this.form;
         return !userName||!password;
       },
 
     },
+    created(){
+      document.addEventListener('keyup', this.enterLogin)
+    },
+    beforeDestroy(){
+      document.removeEventListener('keyup', this.enterLogin)
+    },
     methods:{
+      enterLogin(e){
+        e && e.keyCode === 13 && !this.btnDisable && this.login();
+      },
       login(){
         this.$refs['form'].validate((valid) => {
           if (valid) {
