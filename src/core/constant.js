@@ -3,8 +3,7 @@ export const syeVersion = 'Alpha 0.1.4';
 export const serverUrl = 'http://114.55.124.75:7754';
 
 export const videoInfo = {
-  videoServerUrl: 'http://61.135.149.18:9998',
-  port: '9998',
+  videoServerUrl: 'http://61.135.149.18:9999',
   userName: 'spgyc',
   passWord: '000000',
   carIdMap: {
