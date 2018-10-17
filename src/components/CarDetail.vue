@@ -114,13 +114,15 @@
 <style lang="scss">
 .car-detail-wrap{
    position: fixed;
-    top: 20px;
+   top: 20px;
    right: 50px;
-  width: 500px;
+   width: 500px;
+   height: 600px;
+   overflow: scroll;
    background: red;
    z-index: 1;
    background: #f4f4f4;
-  padding: 10px;
+   padding: 10px;
   .close{
     height: 20px;
     text-align: right;
