@@ -4,12 +4,16 @@
       .logo
       span.name ***监控平台
     slot
-    .user-Name(@mouseenter="showSetWrap=true" @mouseleave="showSetWrap=false") 欢迎 {{userName}}
-      span.pull-down-wrap
-        i.pull-down
-      .set-wrap(v-show="showSetWrap")
-        .modify-password(@click="modifyPassword") 修改密码
-        .log-out(@click="logOut") 退出登录
+    .user-Name(@mouseenter="showSetWrap=true" @mouseleave="showSetWrap=false")
+      el-dropdown
+        span.el-dropdown-link 欢迎 {{userName}}
+          span.pull-down-wrap
+            i.pull-down
+        el-dropdown-menu(slot="dropdown")
+          el-dropdown-item
+            .modify-password(@click="modifyPassword") 修改密码
+          el-dropdown-item
+            .log-out(@click="logOut") 退出登录
     .current-data {{currentTime}}
     el-dialog(title="修改密码" :visible.sync="dialogFormVisible")
       el-form(:model="form" label-width="60px")
@@ -126,7 +130,6 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
   .header-wrap{
-    padding: 0 20px;
     width: 100%;
     height:  $header-height;
     background: $base-color;
@@ -134,6 +137,7 @@
       height: $header-height;
       float: left;
       color: #fff;
+      margin-right: 20px;
       .logo{
         background: url("~assets/logo.png");
         width: 80px;
@@ -150,7 +154,7 @@
         margin-left: 5px;
       }
       .name{
-        font-size: 14px;
+        font-size: 16px;
         color: #ccc;
         height: $header-height;
         line-height: $header-height;
@@ -166,28 +170,14 @@
       height: 100%;
       line-height: 60px;
     }
-    .pull-down-wrap{
-      display: inline-block;
-      height: 20px;
-      width: 40px;
-      overflow: hidden;
-      position: relative;
-      top: 12px;
-      .pull-down{
-        display: inline-block;
-        width: 16px;
-        height: 16px;
-        background: #ccc;
-        background-size: 20px 20px;
-        position: absolute;
-        left: 10px;
-        top: -10px;
-        transform: rotate(45deg);
-      }
-    }
     .user-Name{
       cursor: pointer;
       margin-left: 10px;
+      margin-right: 20px;
+      .el-dropdown-link{
+        color: #ccc;
+        position: relative;
+      }
       .set-wrap{
         background: #fff;
         position: absolute;
@@ -199,6 +189,25 @@
           &:hover{
             background: #f4f4f4
           }
+        }
+      }
+      .pull-down-wrap{
+        display: inline-block;
+        height: 20px;
+        width: 40px;
+        overflow: hidden;
+        position: relative;
+        top: 12px;
+        .pull-down{
+          display: inline-block;
+          width: 14px;
+          height: 14px;
+          background: #fff;
+          background-size: 16px 16px;
+          position: absolute;
+          left: 10px;
+          top: -10px;
+          transform: rotate(45deg);
         }
       }
     }

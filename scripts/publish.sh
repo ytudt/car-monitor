@@ -1,5 +1,4 @@
 node build/build.js
-cp -R flash/ ./dist
 cp -R dist/ ../ytudt.github.io
 cd ../ytudt.github.io
 git add -A

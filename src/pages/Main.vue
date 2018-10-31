@@ -9,7 +9,7 @@
               el-dropdown-item(v-for="(item, index) in carList" :key="index")
                 .content(@click="onCarClick(item)") {{item.licenseNumber}}
         li.tab-item.fl.history-tab
-          span(@mouseenter="dialogFormVisible=true") 轨迹回放
+          span(@click="dialogFormVisible=true") 轨迹回放
           el-dialog(title="轨迹回放" :visible.sync="dialogFormVisible" width="70%" v-if="dialogFormVisible" )
             .speed-wrap
               el-radio(v-model="speedFlag" label="true") 二倍速
@@ -31,7 +31,13 @@
                         @mouseenter="getTripList(item)")
         li.tab-item.fl
           router-link(:to="{ name: 'userConfig'}" v-if="showConfig") 配置台
-    CarDetail(v-if="carInfo" :carInfo="carInfo" @close="carInfo=null")
+    <!--CarDetail(v-if="carInfo" :carInfo="carInfo" @close="carInfo=null")-->
+    el-dialog(class="carinfo-dialog" title="实时车辆" :visible.sync="carInfoVisible" width="70%" @close="thisLicenseNumber = null")
+        el-tabs(v-model="tabsActiveName")
+            el-tab-pane(label="视频" name="1")
+                MonitorView(v-if="thisLicenseNumber" :simId="thisSimId" :license="thisLicenseNumber")
+            el-tab-pane(label="货物" name="2")
+                CarDetailList(v-if="carInfo" :carInfo="carInfo")
     .map-wrap()
       div(id="container")
 </template>
@@ -40,16 +46,18 @@
   import api from 'api';
   import {extend, getYMD} from 'util';
   import message from 'util/message'
-  import {timeMap, menuMap} from "constant";
+  import {videoInfo, timeMap, menuMap} from "constant";
   import Header from 'components/Header';
-  import CarDetail from 'components/CarDetail';
+  import CarDetailList from 'components/CarDetailList';
+  import MonitorView from 'components/MonitorView';
   import {mapGetters} from 'vuex';
 
   export default {
     name: 'Main',
     components: {
       Header,
-      CarDetail,
+      CarDetailList,
+      MonitorView
     },
     computed: {
       ...mapGetters([
@@ -72,6 +80,10 @@
         carList: [],
         refreshTimer: null,
         pathSimplifierIns: null,
+        carInfoVisible: false,
+        tabsActiveName: '1',
+        thisLicenseNumber: null,
+        thisSimId: null
       }
     },
     created(){
@@ -160,7 +172,10 @@
       onCarClick(carInfo){
         this.carInfo = null;
         this.$nextTick(() => {
+          this.carInfoVisible = true;
           this.carInfo = carInfo;
+          this.thisLicenseNumber = carInfo.licenseNumber;
+          this.thisSimId = videoInfo.carIdMap[this.thisLicenseNumber];
           this.pathSimplifierIns.hide();
         });
 
@@ -221,7 +236,7 @@
             this.hisOutList = data.data;
           })
           .catch(() => this.hisOutList = [])
-      },
+      }
     },
   }
 </script>
@@ -245,17 +260,20 @@
       display: inline-block;
       float: left;
       .tab-item,.el-dropdown-link.first{
-        font-size: 18px;
+        font-size: 16px;
       }
       .tab-item{
         float: left;
         height: $header-height;
-        line-height: $header-height;
-        margin: 0 10px;
+        line-height: $header-line-height;
+        padding: 10px;
         cursor: pointer;
         .el-dropdown-link{
           color: #fff;
         }
+      }
+      .tab-item:hover{
+        background-color: rgba(0, 0, 0, 0.2);
       }
     }
     .history-tab{
@@ -302,6 +320,10 @@
     }
     #container{
       height: 100%;
+    }
+    .carinfo-dialog .el-dialog__body{
+      padding-top: 0;
+      padding-bottom: 0;
     }
   }
 </style>
