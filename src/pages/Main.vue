@@ -133,7 +133,9 @@
             })
             .then(({data}) => {
               car = extend(car, data.data);
-              car.position = [car.lng, car.lat];
+              const p = GPS.gcj_encrypt(car.lat, car.lng);
+              car.position = [p.lon, p.lat];
+              // car.position = [car.lng, car.lat];
               this.carList = carList;
               resolve();
             })
