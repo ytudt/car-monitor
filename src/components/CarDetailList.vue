@@ -18,27 +18,24 @@
       el-table(size="mini" border :data="orderList" align="center" v-if="disPlayItemMap.SHOWGOODS")
         el-table-column(label="门店")
           template(slot-scope="scope")
-            span {{scope.row.customerName}}
+            span {{scope.row.item.customerName}}
         el-table-column(label="货物件数")
           template(slot-scope="scope")
-            span {{scope.row.dispatchNubmer}}
+            span {{scope.row.item.count}}
+        el-table-column(label="货物状态")
+          template(slot-scope="scope")
+            span {{scope.row.item.status_name}}
         el-table-column(label="明细")
           template(slot-scope="scope")
             el-dropdown
-              div.el-dropdown-link
-                span 明细
+              span.el-dropdown-link(style="cursor: pointer;") 明细
                   i.el-icon-caret-bottom
-                    el-dropdown-menu(slot="dropdown")
-                        el-dropdown-item
-                            ul.clr
-                                li.fl 1
-                                li.fl 2
-                                li.fl 3
-                        el-dropdown-item
-                            ul.clr
-                                li.fl 1
-                                li.fl 2
-                                li.fl 3
+              el-dropdown-menu(slot="dropdown")
+                  el-dropdown-item(v-for="(n, i) in scope.row.list" :key="i")
+                    div(style="text-align: left")
+                      span(style="margin-right: 20px;") 货物：{{n.goodsName}}
+                      span(style="margin-right: 20px;") 数量：{{n.dispatchNubmer}}
+                      span 规格：{{n.goodsNorms}}
 </template>
 
 <script>
@@ -92,12 +89,30 @@
           dispatchDate: `${Y}-${M}-${D}`,
         })
           .then(({data}) => {
-            this.orderList = data;
+            this.orderList = this.formatOrderList(data);
             let data0 = data[0] || {};
             this.carBasic = [data0];
           });
       },
-    },
+      formatOrderList(data) {
+        const carMap = {}
+        data.forEach(i => {carMap[i.orderCode] = i})
+        const baseArray = []
+        for(let key in carMap) {
+          const item = carMap[key]
+          item.status_name = item.status === 10 ? '在途中' : item.status === 20 ? '已送达' : '--'
+          const list = data.filter(f => f.orderCode === key)
+          let count = 0
+          list.forEach(i => {count += i.dispatchNubmer})
+          item.count = count
+          baseArray.push({
+            item,
+            list
+          })
+        }
+        return baseArray
+      }
+    }
   }
 </script>
 
