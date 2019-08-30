@@ -38,6 +38,8 @@
                 MonitorView(v-if="thisLicenseNumber" :simId="thisSimId" :license="thisLicenseNumber")
             el-tab-pane(label="货物" name="2")
                 CarDetailList(v-if="carInfo" :carInfo="carInfo")
+            el-tab-pane(label="清单" name="3")
+                CarDetailListSync(v-if="thisLicenseNumber" :license="thisLicenseNumber")
     .map-wrap()
       div(id="container")
 </template>
@@ -49,6 +51,7 @@
   import {videoInfo, timeMap, menuMap} from "constant";
   import Header from 'components/Header';
   import CarDetailList from 'components/CarDetailList';
+  import CarDetailListSync from 'components/CarDetailListSync';
   import MonitorView from 'components/MonitorView';
   import {mapGetters} from 'vuex';
 
@@ -57,6 +60,7 @@
     components: {
       Header,
       CarDetailList,
+      CarDetailListSync,
       MonitorView
     },
     computed: {
